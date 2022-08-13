@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true">
+
+    <ImageView
+        android:id="@+id/preview_image"
+        android:layout_width="100dp"
+        android:layout_height="80dp"
+        android:layout_marginVertical="16dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/play_icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/ic_play_white"
+        app:layout_constraintBottom_toBottomOf="@id/preview_image"
+        app:layout_constraintLeft_toLeftOf="@id/preview_image"
+        app:layout_constraintRight_toRightOf="@id/preview_image"
+        app:layout_constraintTop_toTopOf="@id/preview_image" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/audio_title"
+        style="@style/PageMiddleTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/audio_duration"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintLeft_toRightOf="@id/preview_image"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="Garni Temple inside" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/audio_duration"
+        style="@style/PageSmallTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintLeft_toRightOf="@id/preview_image"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/audio_title"
+        tools:text="10 min" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

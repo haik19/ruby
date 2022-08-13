@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/back_btn"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/ic_arrow_left"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/page_title"
+        style="@style/PageMiddleTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/gen_now_playing"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="@+id/back_btn"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/image_preview"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="56dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginBottom="40dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toTopOf="@id/audio_title"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/page_title" />
+
+    <TextView
+        android:id="@+id/audio_title"
+        style="@style/PageMiddleTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="60dp"
+        android:text="@string/gen_now_playing"
+        android:textAlignment="center"
+        android:textSize="28sp"
+        app:layout_constraintBottom_toTopOf="@id/seek_bar"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatSeekBar
+        android:id="@+id/seek_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginBottom="210dp"
+        android:max="100"
+        android:maxHeight="4dp"
+        android:progressDrawable="@drawable/seek_bar_drawable"
+        android:thumb="@drawable/seek_thumb_selector"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/previous_audio_btn"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="40dp"
+        android:background="?selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_previous"
+        app:layout_constraintEnd_toStartOf="@+id/play_audio_btn"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/seek_bar"
+        app:tint="@android:color/darker_gray" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/play_audio_btn"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginHorizontal="58dp"
+        android:layout_marginTop="40dp"
+        android:background="?selectableItemBackgroundBorderless"
+        android:src="@drawable/play_pause_selector"
+        app:layout_constraintEnd_toStartOf="@+id/next_audio_btn"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/previous_audio_btn"
+        app:layout_constraintTop_toBottomOf="@id/seek_bar"
+        app:tint="@android:color/darker_gray" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/next_audio_btn"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="40dp"
+        android:background="?selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_next"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/play_audio_btn"
+        app:layout_constraintTop_toBottomOf="@id/seek_bar"
+        app:tint="@android:color/darker_gray" />
+
+    <TextView
+        android:id="@+id/current_time"
+        style="@style/PageVerySmallTextStyle"
+        android:textSize="14sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginHorizontal="16dp"
+        app:layout_constraintLeft_toLeftOf="@id/seek_bar"
+        app:layout_constraintTop_toBottomOf="@id/seek_bar"
+        tools:text="0:23" />
+
+    <TextView
+        android:id="@+id/audio_duration_txt"
+        style="@style/PageVerySmallTextStyle"
+        android:textSize="14sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginHorizontal="16dp"
+        app:layout_constraintRight_toRightOf="@id/seek_bar"
+        app:layout_constraintTop_toBottomOf="@id/seek_bar"
+        tools:text="0:23" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="PageTitleStyle">
+        <item name="android:textSize">34sp</item>
+        <item name="android:textColor">#0A3A5D</item>
+        <item name="android:textStyle">bold</item>
+
+    </style>
+
+    <style name="PageMiddleTextStyle">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">#4B4B4B</item>
+    </style>
+
+    <style name="PageSmallTextStyle">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">#7C7C7C</item>
+    </style>
+
+    <style name="PageVerySmallTextStyle">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">#999999</item>
+    </style>
+</resources>

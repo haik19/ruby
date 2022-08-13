@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/back_btn"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/ic_arrow_left"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/page_title"
+        style="@style/PageMiddleTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/gen_leave_feedback"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="@+id/back_btn"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/preview_image"
+        android:layout_width="100dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="28dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/page_title" />
+
+    <TextView
+        android:id="@+id/package_title"
+        style="@style/PageMiddleTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:text="@string/gen_now_playing"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@+id/files_count"
+        app:layout_constraintLeft_toRightOf="@id/preview_image"
+        app:layout_constraintTop_toTopOf="@id/preview_image" />
+
+    <TextView
+        android:id="@+id/files_count"
+        style="@style/PageVerySmallTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:text="@string/gen_now_playing"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="@id/preview_image"
+        app:layout_constraintLeft_toRightOf="@id/preview_image"
+        app:layout_constraintTop_toBottomOf="@+id/package_title" />
+
+    <TextView
+        android:id="@+id/enjoy_text"
+        style="@style/PageMiddleTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="32dp"
+        android:text="@string/enjoy_text"
+        android:textAlignment="center"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/preview_image" />
+
+    <RatingBar
+        android:id="@+id/rating_bar"
+        style="?android:attr/ratingBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="16dp"
+        android:scaleX="1.8"
+        android:scaleY="1.8"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/enjoy_text"
+        app:layout_constraintTop_toBottomOf="@id/enjoy_text" />
+
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/feedback_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="40dp"
+        android:maxLength="300"
+        android:maxLines="10"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rating_bar" />
+
+    <TextView
+        android:id="@+id/type_preview"
+        style="@style/PageSmallTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/type_review"
+        android:textAlignment="center"
+        app:layout_constraintLeft_toLeftOf="@id/feedback_edit_text"
+        app:layout_constraintTop_toBottomOf="@+id/feedback_edit_text" />
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="16dp"
+        android:background="#c4c4c4"
+        app:layout_constraintBottom_toTopOf="@id/submit_button"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+
+    <com.tbnt.ruby.ui.common.AudionBtn
+        android:id="@+id/submit_button"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="34dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
