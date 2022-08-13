@@ -28,12 +28,18 @@ class AudioPreviewFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val binding = AudioPreviewLayoutBinding.bind(view)
-        binding.playBtn.setTextColor("#F5C037")
-        binding.playBtn.setText(getString(R.string.gen_play))
-        binding.downloadBtn.setTextColor("#FFFFFF")
-        binding.downloadBtn.setBgColor("#F5C037")
-        binding.downloadBtn.setText(getString(R.string.gen_download))
-        binding.buttonsContainer.visibility = if (args.showPlayBtn) View.GONE else View.VISIBLE
+        binding.run {
+            playBtn.apply {
+                setTextColor("#F5C037")
+                setText(getString(R.string.gen_play))
+            }
+            downloadBtn.apply {
+                setTextColor("#FFFFFF")
+                setBgColor("#F5C037")
+                setText(getString(R.string.gen_download))
+            }
+            binding.buttonsContainer.visibility = if (args.showPlayBtn) View.GONE else View.VISIBLE
+        }
 
         val scrollableContent = binding.previewScrollableContent
         scrollableContent.leaveFeedbackText.setOnClickListener {
