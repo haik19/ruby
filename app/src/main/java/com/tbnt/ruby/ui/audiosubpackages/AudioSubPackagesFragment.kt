@@ -5,18 +5,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.tbnt.ruby.R
 import com.tbnt.ruby.databinding.AudioSubPackagesLayoutBinding
-import com.tbnt.ruby.repo.AudioDataRepo
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AudioSubPackagesFragment : Fragment() {
 
-    private val audioDataRepo = AudioDataRepo()
     private val subPackagesFragmentArgs: AudioSubPackagesFragmentArgs by navArgs()
+    private val subPackagesViewModel: AudioSubPackagesViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,10 +37,10 @@ class AudioSubPackagesFragment : Fragment() {
                 RecyclerView.VERTICAL
             )
         )
-        val adapter = AudioSubPackagesAdapter { title ->
+        val adapter = AudioSubPackagesAdapter { id, index ->
             findNavController().navigate(
                 AudioSubPackagesFragmentDirections.actionAudioSubPackagesFragmentToMediaPlayerFragment(
-                    title
+                    id, index
                 )
             )
         }
@@ -45,11 +48,13 @@ class AudioSubPackagesFragment : Fragment() {
         binding.backBtn.setOnClickListener {
             findNavController().popBackStack()
         }
-        audioDataRepo.fetchSubPackagesById().apply {
-            adapter.submitList(this)
 
-            binding.pageTitle.text = subPackagesFragmentArgs.pageTitle
-        }
+        subPackagesViewModel.packagesDataFlow.onEach {
+            it?.let {
+                adapter.submitList(it)
+                binding.pageTitle.text = subPackagesFragmentArgs.pageTitle
+            }
+        }.launchIn(viewLifecycleOwner.lifecycleScope)
+        subPackagesViewModel.loadSubPackages(subPackagesFragmentArgs.audioId)
     }
-
 }

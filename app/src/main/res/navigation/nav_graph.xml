@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph.xml"
-    app:startDestination="@id/audioBooksFragment2">
+    app:startDestination="@id/audioBooksFragment">
 
     <fragment
         android:id="@+id/tipsFragment"
@@ -30,9 +30,12 @@
         android:label="AudioPreviewFragment">
 
         <argument
+            android:name="audioBookId"
+            app:argType="string" />
+        <argument
             android:name="showPlayBtn"
-            app:argType="boolean"
-            android:defaultValue="false" />
+            android:defaultValue="false"
+            app:argType="boolean" />
         <action
             android:id="@+id/action_audioPreviewFragment_to_feedBackFragment"
             app:destination="@id/feedBackFragment" />
@@ -40,8 +43,12 @@
     <fragment
         android:id="@+id/audioSubPackagesFragment"
         android:name="com.tbnt.ruby.ui.audiosubpackages.AudioSubPackagesFragment"
-        android:label="AudioSubPackagesFragment" >
-        <argument android:name="pageTitle"
+        android:label="AudioSubPackagesFragment">
+        <argument
+            android:name="audioId"
+            app:argType="string" />
+        <argument
+            android:name="pageTitle"
             app:argType="string" />
         <action
             android:id="@+id/action_audioSubPackagesFragment_to_mediaPlayerFragment"
@@ -50,15 +57,18 @@
     <fragment
         android:id="@+id/mediaPlayerFragment"
         android:name="com.tbnt.ruby.ui.mediaplayer.MediaPlayerFragment"
-        android:label="MediaPlayerFragment" >
+        android:label="MediaPlayerFragment">
         <argument
-            android:name="audioTitle"
+            android:name="audioId"
             app:argType="string" />
+        <argument
+            android:name="subAudioId"
+            app:argType="integer" />
     </fragment>
     <fragment
-        android:id="@+id/audioBooksFragment2"
+        android:id="@+id/audioBooksFragment"
         android:name="com.tbnt.ruby.ui.auidiobooks.AudioBooksFragment"
-        android:label="AudioBooksFragment" >
+        android:label="AudioBooksFragment">
         <action
             android:id="@+id/action_audioBooksFragment_to_audioPreviewFragment"
             app:destination="@id/audioPreviewFragment" />

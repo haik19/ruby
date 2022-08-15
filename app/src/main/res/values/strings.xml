@@ -38,4 +38,5 @@
     <string name="gen_access">Get access to all guides</string>
     <string name="gen_save">save</string>
     <string name="gen_language_ribbon_text">Download russian guides</string>
+    <string name="audio_files_count">%s audio files</string>
 </resources>

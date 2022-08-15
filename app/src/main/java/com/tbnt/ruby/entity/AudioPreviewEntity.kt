@@ -3,7 +3,7 @@ package com.tbnt.ruby.entity
 data class AudioPreviewEntity(
     val imageUrl: String,
     val title: String,
-    val subTitle: String,
+    val audioFilesCount: Int,
     val rating: Float,
     val duration: String,
     val desc: String,

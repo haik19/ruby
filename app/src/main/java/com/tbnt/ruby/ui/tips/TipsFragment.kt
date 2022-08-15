@@ -5,17 +5,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import com.tbnt.ruby.R
 import com.tbnt.ruby.databinding.FragmentTipsBinding
-import com.tbnt.ruby.repo.AudioDataRepo
-
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class TipsFragment : Fragment() {
-    private val dataRepo = AudioDataRepo()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    private val tipsPageViewModel: TipsPageViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,9 +27,15 @@ class TipsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentTipsBinding.bind(view)
         val tipsAdapter = TipsAdapter()
-        tipsAdapter.submitList(dataRepo.fetchTipsData())
+
+        tipsPageViewModel.tipsDataFlow.onEach {
+            it?.let {
+                tipsAdapter.submitList(it)
+            }
+        }.launchIn(viewLifecycleOwner.lifecycleScope)
+        tipsPageViewModel.loadTipsData()
+
         binding.tipsRv.addItemDecoration(TipsRvDecoration())
         binding.tipsRv.adapter = tipsAdapter
     }
-
 }

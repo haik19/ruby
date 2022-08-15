@@ -5,14 +5,17 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tbnt.ruby.R
 import com.tbnt.ruby.databinding.FragmentMyAudioBooksBinding
-import com.tbnt.ruby.repo.AudioDataRepo
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MyAudioBooksFragment : Fragment() {
-    private val dataRepo = AudioDataRepo()
+    private val myAudioBooksViewModel: MyAudioBooksViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -24,14 +27,21 @@ class MyAudioBooksFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentMyAudioBooksBinding.bind(view)
-        val myBooksAdapter = MyAudioBooksAdapter { title ->
+        val myBooksAdapter = MyAudioBooksAdapter { title, id ->
             val action =
                 MyAudioBooksFragmentDirections.actionMyAudioBooksFragmentToAudioSubPackagesFragment(
+                    id,
                     title
                 )
             findNavController().navigate(action)
         }
-        myBooksAdapter.submitList(dataRepo.fetchMyBooksData())
+        myAudioBooksViewModel.myAudioBooksFlow.onEach {
+            it?.let {
+                myBooksAdapter.submitList(it)
+            }
+        }.launchIn(viewLifecycleOwner.lifecycleScope)
+        myAudioBooksViewModel.loadMyAudioBooks()
+
         binding.myAudioRv.layoutManager = LinearLayoutManager(view.context)
         binding.myAudioRv.addItemDecoration(MyAudioBooksRvDecoration())
         binding.myAudioRv.adapter = myBooksAdapter

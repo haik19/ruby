@@ -1,5 +1,7 @@
 package com.tbnt.ruby
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.FragmentActivity
@@ -37,5 +39,12 @@ class MainActivity : FragmentActivity() {
 
     private fun hideBottomNav() = binding?.run {
         navigationView.visibility = View.GONE
+    }
+
+    companion object {
+        fun startActivity(context: Context) {
+            val intent = Intent(context, MainActivity::class.java)
+            context.startActivity(intent)
+        }
     }
 }

@@ -55,6 +55,7 @@
         <entry key="app/src/main/res/layout/main_layout.xml" value="0.1" />
         <entry key="app/src/main/res/layout/media_player_layout.xml" value="0.32027130126953124" />
         <entry key="app/src/main/res/layout/my_audio_file_item_layout.xml" value="0.375" />
+        <entry key="app/src/main/res/layout/splash_layout.xml" value="0.18554938007695596" />
         <entry key="app/src/main/res/layout/sub_audio_item_layout.xml" value="0.1" />
         <entry key="app/src/main/res/layout/sub_audio_layout.xml" value="0.19610507246376813" />
         <entry key="app/src/main/res/layout/tips_item_layout.xml" value="0.335" />

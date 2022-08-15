@@ -11,7 +11,7 @@ import com.tbnt.ruby.databinding.SubAudioItemLayoutBinding
 import com.tbnt.ruby.setRoundedCorner
 import com.tbnt.ruby.toPx
 
-class AudioSubPackagesAdapter(private val onClick: (title: String) -> Unit) :
+class AudioSubPackagesAdapter(private val onClick: (id: String, index: Int) -> Unit) :
     ListAdapter<SubAudioEntity, AudioSubPackagesAdapter.SubAudioViewHolder>(object :
         DiffUtil.ItemCallback<SubAudioEntity>() {
         override fun areItemsTheSame(oldItem: SubAudioEntity, newItem: SubAudioEntity) =
@@ -24,7 +24,7 @@ class AudioSubPackagesAdapter(private val onClick: (title: String) -> Unit) :
 
     class SubAudioViewHolder(
         private val binding: SubAudioItemLayoutBinding,
-        val onClick: (title: String) -> Unit
+        val onClick: (id: String, index: Int) -> Unit
     ) :
         RecyclerView.ViewHolder(binding.root) {
         init {
@@ -34,7 +34,7 @@ class AudioSubPackagesAdapter(private val onClick: (title: String) -> Unit) :
         fun bind(subAudioEntity: SubAudioEntity) {
             binding.run {
                 itemView.setOnClickListener {
-                    onClick(subAudioEntity.title)
+                    onClick(subAudioEntity.id, adapterPosition)
                 }
                 audioTitle.text = subAudioEntity.title
                 audioDuration.text = subAudioEntity.duration

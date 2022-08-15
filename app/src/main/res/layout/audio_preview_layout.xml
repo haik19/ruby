@@ -19,6 +19,7 @@
         layout="@layout/tips_scrollable_content"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="4dp"
         app:layout_constraintBottom_toTopOf="@id/buttons_container"
         app:layout_constraintTop_toBottomOf="@id/image_preview" />
 

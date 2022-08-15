@@ -7,20 +7,23 @@ import android.os.Looper
 import android.view.View
 import android.widget.SeekBar
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.squareup.picasso.Picasso
 import com.tbnt.ruby.R
 import com.tbnt.ruby.databinding.MediaPlayerLayoutBinding
-import com.tbnt.ruby.repo.AudioDataRepo
 import com.tbnt.ruby.setRoundedCorner
 import com.tbnt.ruby.toPx
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 private const val PROGRESS_UPDATE_STAMP = 100L
 
 class MediaPlayerFragment : Fragment(R.layout.media_player_layout) {
 
-    private val repo = AudioDataRepo()
+    private val mediaPlayerViewModel: MediaPlayerViewModel by viewModel()
     private val mediaPlayerFragmentArgs: MediaPlayerFragmentArgs by navArgs()
     private var mediaPlayer: MediaPlayer? = null
     private var viewBinding: MediaPlayerLayoutBinding? = null
@@ -37,15 +40,18 @@ class MediaPlayerFragment : Fragment(R.layout.media_player_layout) {
             binding.backBtn.setOnClickListener {
                 findNavController().popBackStack()
             }
-            repo.getAudioFilesData().apply {
-                val currentAudion =
-                    find { it.title == mediaPlayerFragmentArgs.audioTitle } ?: return
-                binding.audioTitle.text = currentAudion.title
-                Picasso.get().load(currentAudion.imageUrl).into(binding.imagePreview)
-            }
+            mediaPlayerViewModel.playerDataStateFlow.onEach {
+                it?.let {
+                    binding.audioTitle.text = it.title
+                    Picasso.get().load(it.imageUrl).into(binding.imagePreview)
+                }
+            }.launchIn(viewLifecycleOwner.lifecycleScope)
+            mediaPlayerViewModel.loadPlayerData(
+                mediaPlayerFragmentArgs.audioId,
+                mediaPlayerFragmentArgs.subAudioId
+            )
         }
     }
-
 
     private fun setUpMediaPlayer(binding: MediaPlayerLayoutBinding) {
         mediaPlayer = MediaPlayer.create(binding.root.context, R.raw.test_audio)

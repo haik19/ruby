@@ -36,11 +36,10 @@
         android:layout_height="54dp"
         android:layout_margin="16dp"
         android:background="@drawable/ribbon_green_gradient"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent">
-
-
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/bg_separator_view"
@@ -87,6 +86,7 @@
             android:id="@+id/ribbon_text"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_marginRight="16dp"
             android:gravity="center"
             android:maxLines="1"
             android:text="@string/gen_access"
@@ -95,7 +95,6 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginRight="16dp"
             app:layout_constraintRight_toLeftOf="@id/save_text"
             app:layout_constraintTop_toTopOf="parent" />
 

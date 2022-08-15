@@ -157,8 +157,7 @@
                         android:id="@+id/desc_text_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@color/white"
-                        android:padding="4dp"
+                        android:padding="8dp"
                         tools:text="Introduction to Algorithms\n\nThe Art of Computer Programming\n\nStructure and Interpretation of Computer Programs\n\nProgramming Pearls\n\nPatterns of Enterprise Application Architecture Introduction to Algorithms\n\nThe Art of Computer Programming\n\nStructure and Interpretation of Computer Programs\n\nProgramming Pearls\n\nPatterns of Enterprise Application Architecture Introduction to Algorithms\n\nThe Art of Computer Programming\n\nStructure and Interpretation of Computer Programs\n\nProgramming Pearls\n\nPatterns of Enterprise Application Architecture Introduction to Algorithms\n\nThe Art of Computer Programming\n\nStructure and Interpretation of Computer Programs\n\nProgramming Pearls\n\nPatterns of Enterprise Application Architecture" />
                 </FrameLayout>
             </LinearLayout>

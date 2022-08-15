@@ -5,17 +5,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.squareup.picasso.Picasso
 import com.tbnt.ruby.R
 import com.tbnt.ruby.databinding.AudioPreviewLayoutBinding
-import com.tbnt.ruby.repo.AudioDataRepo
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AudioPreviewFragment : Fragment() {
 
-    private val audioDataRepo = AudioDataRepo()
     private val args: AudioPreviewFragmentArgs by navArgs()
+    private val audioPreviewViewModel: AudioPreviewViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,16 +59,20 @@ class AudioPreviewFragment : Fragment() {
         binding.closeBtn.setOnClickListener {
             findNavController().popBackStack()
         }
-        audioDataRepo.fetchPreviewData().apply {
-            scrollableContent.previewTitle.text = title
-            scrollableContent.previewSubtitle.text = subTitle
-            scrollableContent.ratingBar.rating = rating
-            scrollableContent.previewAudioTime.text = duration
-            scrollableContent.previewDesc.text = desc
-            scrollableContent.descTextView.text = tips
-            binding.imagePreview.apply {
-                Picasso.get().load(imageUrl).into(this)
+        audioPreviewViewModel.audioPreviewFlow.onEach {
+            it?.run {
+                scrollableContent.previewTitle.text = title
+                scrollableContent.previewSubtitle.text =
+                    getString(R.string.audio_files_count, audioFilesCount)
+                scrollableContent.ratingBar.rating = rating
+                scrollableContent.previewAudioTime.text = duration
+                scrollableContent.previewDesc.text = desc
+                scrollableContent.descTextView.text = tips
+                binding.imagePreview.apply {
+                    Picasso.get().load(imageUrl).into(this)
+                }
             }
-        }
+        }.launchIn(viewLifecycleOwner.lifecycleScope)
+        audioPreviewViewModel.loadPreviewData(args.audioBookId)
     }
 }

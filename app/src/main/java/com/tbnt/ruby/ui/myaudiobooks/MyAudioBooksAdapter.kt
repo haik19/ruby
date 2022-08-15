@@ -9,7 +9,7 @@ import com.squareup.picasso.Picasso
 import com.tbnt.ruby.databinding.MyAudioFileItemLayoutBinding
 import com.tbnt.ruby.entity.MyAudioBook
 
-class MyAudioBooksAdapter(private val itemClick: (title: String) -> Unit) :
+class MyAudioBooksAdapter(private val itemClick: (title: String, id: String) -> Unit) :
     ListAdapter<MyAudioBook, MyAudioBooksAdapter.MyAudioBookViewHolder>(object :
         DiffUtil.ItemCallback<MyAudioBook>() {
         override fun areItemsTheSame(oldItem: MyAudioBook, newItem: MyAudioBook) =
@@ -35,13 +35,13 @@ class MyAudioBooksAdapter(private val itemClick: (title: String) -> Unit) :
 
     class MyAudioBookViewHolder(
         private val itemBinding: MyAudioFileItemLayoutBinding,
-        val click: (title: String) -> Unit,
+        val click: (title: String, id: String) -> Unit,
     ) :
         RecyclerView.ViewHolder(itemBinding.root) {
 
         fun onBind(auiBook: MyAudioBook) {
             itemView.setOnClickListener {
-                click(auiBook.title)
+                click(auiBook.title, auiBook.id)
             }
             Picasso.get().load(auiBook.imageUrl).into(itemBinding.myAudioImagePreview)
             itemBinding.myAudioTitle.text = auiBook.title
