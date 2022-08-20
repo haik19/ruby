@@ -1,6 +1,5 @@
 package com.tbnt.ruby.ui.auidiobooks
 
-import android.opengl.Visibility
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,8 +14,11 @@ import com.tbnt.ruby.entity.AudioBook
 class AudioBooksAdapter(private val itemClick: (id: String, imageView: ImageView) -> Unit) :
     ListAdapter<AudioBook, AudioBooksAdapter.AudioBookViewHolder>(object :
         DiffUtil.ItemCallback<AudioBook>() {
-        override fun areItemsTheSame(oldItem: AudioBook, newItem: AudioBook) = oldItem == newItem
-        override fun areContentsTheSame(oldItem: AudioBook, newItem: AudioBook) = oldItem == newItem
+        override fun areItemsTheSame(oldItem: AudioBook, newItem: AudioBook) =
+            oldItem.id == newItem.id
+
+        override fun areContentsTheSame(oldItem: AudioBook, newItem: AudioBook) =
+            oldItem.isPurchased == newItem.isPurchased
     }) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AudioBookViewHolder {
@@ -41,7 +43,7 @@ class AudioBooksAdapter(private val itemClick: (id: String, imageView: ImageView
         RecyclerView.ViewHolder(itemBinding.root) {
 
         fun onBind(auiBook: AudioBook) {
-            if (adapterPosition % 2 == 0) { // TODO REPLACE WITH REAL TEXT
+            if (auiBook.isPurchased) {
                 itemBinding.audioPrice.visibility = View.GONE
                 itemBinding.audioPurchasedText.visibility = View.VISIBLE
             } else {

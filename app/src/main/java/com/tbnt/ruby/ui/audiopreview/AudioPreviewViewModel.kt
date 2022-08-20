@@ -18,16 +18,22 @@ class AudioPreviewViewModel(private val repo: RubyDataRepo) : ViewModel() {
             apiModel.audioBooks.find { it.id == id }?.run {
                 _audioPreviewFlow.emit(
                     AudioPreviewEntity(
+                        id,
                         imageUrl,
                         name,
                         audioBooksCount,
                         ratingStars,
                         duration,
                         description,
-                        tips.joinToString("\n\n")
+                        tips.joinToString("\n\n"),
+                        repo.getPurchasedIds().contains(id)
                     )
                 )
             }
         }
+    }
+
+    fun storePurchasedData(id: String) = viewModelScope.launch(Dispatchers.Default) {
+        repo.storePurchasedData(id)
     }
 }

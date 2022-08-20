@@ -10,7 +10,6 @@ import com.tbnt.ruby.MainActivity
 import com.tbnt.ruby.R
 import com.tbnt.ruby.isNetworkConnected
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.lang.ref.WeakReference
 
 class LaunchActivity : FragmentActivity() {
     private val splashViewModel: SplashViewModel by viewModel()

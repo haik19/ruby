@@ -19,6 +19,8 @@ class AudioPreviewFragment : Fragment() {
 
     private val args: AudioPreviewFragmentArgs by navArgs()
     private val audioPreviewViewModel: AudioPreviewViewModel by viewModel()
+    private var audioTitle: String = ""
+    private var audioPreviewId: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,8 +35,16 @@ class AudioPreviewFragment : Fragment() {
         val binding = AudioPreviewLayoutBinding.bind(view)
         binding.run {
             playBtn.apply {
+                setOnClickListener {
+                    findNavController().navigate(
+                        AudioPreviewFragmentDirections.actionAudioPreviewFragmentToAudioSubPackagesFragment(
+                            audioPreviewId,
+                            audioTitle
+                        )
+                    )
+                }
                 setTextColor("#F5C037")
-                setText(getString(R.string.gen_play))
+                setText(getString(R.string.gen_try))
             }
             downloadBtn.apply {
                 setTextColor("#FFFFFF")
@@ -48,19 +58,26 @@ class AudioPreviewFragment : Fragment() {
         scrollableContent.leaveFeedbackText.setOnClickListener {
             findNavController().navigate(R.id.action_audioPreviewFragment_to_feedBackFragment)
         }
-        scrollableContent.previewPlayBtn.apply {
-            setTextColor("#1596C0")
-            setStrokeColor("#1596C0")
-            setText(getString(R.string.gen_play_preview))
-            visibility =
-                if (args.showPlayBtn) View.VISIBLE else View.GONE
-        }
-
         binding.closeBtn.setOnClickListener {
             findNavController().popBackStack()
         }
+        binding.downloadBtn.apply {
+            setOnClickListener {
+                visibility = View.GONE
+                showPlayButton(binding)
+                audioPreviewViewModel.storePurchasedData(args.audioBookId)
+            }
+        }
         audioPreviewViewModel.audioPreviewFlow.onEach {
             it?.run {
+                if (isPurchased) {
+                    binding.downloadBtn.visibility = View.GONE
+                    showPlayButton(binding)
+                } else {
+                    binding.downloadBtn.visibility = View.VISIBLE
+                }
+                audioTitle = it.title
+                audioPreviewId = it.audioId
                 scrollableContent.previewTitle.text = title
                 scrollableContent.previewSubtitle.text =
                     getString(R.string.audio_files_count, audioFilesCount)
@@ -74,5 +91,13 @@ class AudioPreviewFragment : Fragment() {
             }
         }.launchIn(viewLifecycleOwner.lifecycleScope)
         audioPreviewViewModel.loadPreviewData(args.audioBookId)
+    }
+
+    private fun showPlayButton(binding: AudioPreviewLayoutBinding) {
+        binding.playBtn.apply {
+            setText(getString(R.string.gen_play))
+            setTextColor("#FFFFFF")
+            setBgColor("#F5C037")
+        }
     }
 }

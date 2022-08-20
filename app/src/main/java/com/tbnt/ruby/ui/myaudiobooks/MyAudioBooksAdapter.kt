@@ -13,7 +13,7 @@ class MyAudioBooksAdapter(private val itemClick: (title: String, id: String) -> 
     ListAdapter<MyAudioBook, MyAudioBooksAdapter.MyAudioBookViewHolder>(object :
         DiffUtil.ItemCallback<MyAudioBook>() {
         override fun areItemsTheSame(oldItem: MyAudioBook, newItem: MyAudioBook) =
-            oldItem == newItem
+            oldItem.id == newItem.id
 
         override fun areContentsTheSame(oldItem: MyAudioBook, newItem: MyAudioBook) =
             oldItem == newItem

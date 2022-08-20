@@ -16,7 +16,7 @@ class AudioBooksViewModel(private val repo: RubyDataRepo) : ViewModel() {
     fun loadAudioBooks() = viewModelScope.launch(Dispatchers.Default) {
         repo.getData()?.let {
             _booksDataStateFlow.emit(it.audioBooks.map { apiData ->
-                AudioBook(apiData.id, apiData.imageUrl, apiData.name, "25$", apiData.ratingStars)
+                AudioBook(apiData.id, apiData.imageUrl, apiData.name, "25$", apiData.ratingStars, repo.getPurchasedIds().contains(apiData.id))
             })
         }
     }

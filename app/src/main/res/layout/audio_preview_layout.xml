@@ -40,16 +40,17 @@
         android:id="@+id/buttons_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/bg_color"
         android:paddingTop="16dp"
         android:paddingBottom="34dp"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <com.tbnt.ruby.ui.common.AudionBtn
             android:id="@+id/play_btn"
-            android:layout_width="164dp"
+            android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_marginEnd="15dp"
+            android:layout_marginStart="24dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/download_btn"
             app:layout_constraintHorizontal_bias="0.5"
@@ -58,10 +59,11 @@
 
         <com.tbnt.ruby.ui.common.AudionBtn
             android:id="@+id/download_btn"
-            android:layout_width="164dp"
+            android:layout_width="0dp"
             android:layout_height="50dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="24dp"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/play_btn" />
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -39,6 +39,10 @@
         <action
             android:id="@+id/action_audioPreviewFragment_to_feedBackFragment"
             app:destination="@id/feedBackFragment" />
+        <action
+            android:id="@+id/action_audioPreviewFragment_to_audioSubPackagesFragment"
+            app:destination="@id/audioSubPackagesFragment"
+            />
     </fragment>
     <fragment
         android:id="@+id/audioSubPackagesFragment"
@@ -52,7 +56,8 @@
             app:argType="string" />
         <action
             android:id="@+id/action_audioSubPackagesFragment_to_mediaPlayerFragment"
-            app:destination="@id/mediaPlayerFragment" />
+            app:destination="@id/mediaPlayerFragment"
+            />
     </fragment>
     <fragment
         android:id="@+id/mediaPlayerFragment"
