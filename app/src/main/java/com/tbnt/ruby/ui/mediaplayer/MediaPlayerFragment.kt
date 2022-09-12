@@ -1,6 +1,7 @@
 package com.tbnt.ruby.ui.mediaplayer
 
 import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -14,12 +15,16 @@ import com.squareup.picasso.Picasso
 import com.tbnt.ruby.R
 import com.tbnt.ruby.databinding.MediaPlayerLayoutBinding
 import com.tbnt.ruby.setRoundedCorner
+import com.tbnt.ruby.supportingLanCode
 import com.tbnt.ruby.toPx
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.io.File
+import java.util.*
 
 private const val PROGRESS_UPDATE_STAMP = 100L
+private const val SIMPLE = "_SIMPLE"
 
 class MediaPlayerFragment : Fragment(R.layout.media_player_layout) {
 
@@ -34,7 +39,6 @@ class MediaPlayerFragment : Fragment(R.layout.media_player_layout) {
         super.onViewCreated(view, savedInstanceState)
         viewBinding = MediaPlayerLayoutBinding.bind(view)
         viewBinding?.let { binding ->
-            setUpMediaPlayer(binding)
             setUpSeekBar()
             binding.imagePreview.setRoundedCorner(20.toPx)
             binding.backBtn.setOnClickListener {
@@ -44,17 +48,25 @@ class MediaPlayerFragment : Fragment(R.layout.media_player_layout) {
                 it?.let {
                     binding.audioTitle.text = it.title
                     Picasso.get().load(it.imageUrl).into(binding.imagePreview)
+                    if (mediaPlayerFragmentArgs.isFromPreview) {
+                        setUpMediaPlayer(
+                            binding, Uri.parse(
+                                view.context.filesDir.absolutePath + File.separator + Locale.getDefault().isO3Language.supportingLanCode()
+                                        + SIMPLE + File.separator + it.simpleAudioName.plus(".mp3")
+                            )
+                        )
+                    }
+
                 }
             }.launchIn(viewLifecycleOwner.lifecycleScope)
-            mediaPlayerViewModel.loadPlayerData(
-                mediaPlayerFragmentArgs.audioId,
-                mediaPlayerFragmentArgs.subAudioId
-            )
+
+            loadMediaData()
         }
     }
 
-    private fun setUpMediaPlayer(binding: MediaPlayerLayoutBinding) {
-        mediaPlayer = MediaPlayer.create(binding.root.context, R.raw.test_audio)
+
+    private fun setUpMediaPlayer(binding: MediaPlayerLayoutBinding, uri: Uri) {
+        mediaPlayer = MediaPlayer.create(requireContext(), uri)
         mediaPlayer?.let { player ->
             binding.playAudioBtn.setOnClickListener {
                 if (player.isPlaying) pauseAudio() else playAudio()
@@ -142,6 +154,21 @@ class MediaPlayerFragment : Fragment(R.layout.media_player_layout) {
         super.onDestroyView()
         stopRelease()
         viewBinding = null
+    }
+
+    private fun loadMediaData() {
+        if (mediaPlayerFragmentArgs.isFromPreview) {
+            mediaPlayerViewModel.loadPlayerData(
+                mediaPlayerFragmentArgs.audioId,
+                -1
+            )
+        } else {
+            //isFrom sub packages
+            mediaPlayerViewModel.loadPlayerData(
+                mediaPlayerFragmentArgs.audioId,
+                mediaPlayerFragmentArgs.subAudioId
+            )
+        }
     }
 
 }

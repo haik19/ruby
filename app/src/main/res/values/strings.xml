@@ -8,6 +8,7 @@
     <string name="profile">Profile</string>
     <string name="explore">Explore</string>
     <string name="search">Search</string>
+    <string name="empty_txt">At first you need to choose (download) an audioguide</string>
     <string name="purchased">purchased</string>
     <string name="duration">Duration</string>
     <string name="tips_for_you">Tips \nfor you</string>
@@ -39,5 +40,11 @@
     <string name="gen_access">Get access to all guides</string>
     <string name="gen_save">save</string>
     <string name="gen_language_ribbon_text">Download russian guides</string>
+    <string name="gen_choose_guide">Choose guide</string>
     <string name="audio_files_count">%s audio files</string>
+    <string name="gen_rus">Russian</string>
+    <string name="gen_eng">English</string>
+    <string name="gen_cancel">Cancel</string>
+    <string name="language_menu_title">Choose audio guides language</string>
+    <string name="language_menu_sub_title">By changing language of audio guides you will need to dowmload them in selected language</string>
 </resources>

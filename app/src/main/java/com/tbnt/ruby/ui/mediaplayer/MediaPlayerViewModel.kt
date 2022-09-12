@@ -16,10 +16,19 @@ class MediaPlayerViewModel(private val repo: RubyDataRepo) : ViewModel() {
     fun loadPlayerData(id: String, index: Int) =
         viewModelScope.launch(Dispatchers.Default) {
             repo.getData()?.let { apiModel ->
-                val playerData =
+                val playerData = if (index > -1) {
                     apiModel.audioBooks.find { it.id == id }?.subpackage?.getOrNull(index)?.let {
-                        AudioPlayerEntity(it.imageUrl, it.name)
+                        AudioPlayerEntity(it.imageUrl, it.name, fullAudioName = it.audioFileName)
                     }
+                } else {
+                    apiModel.audioBooks.find { it.id == id }?.let {
+                        AudioPlayerEntity(
+                            it.imageUrl,
+                            it.name,
+                            simpleAudioName = it.sampleAudioFileName ?: it.getValue()
+                        )
+                    }
+                }
                 _playerDataStateFlow.emit(playerData)
             }
         }

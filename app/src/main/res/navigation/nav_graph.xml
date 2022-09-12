@@ -41,8 +41,10 @@
             app:destination="@id/feedBackFragment" />
         <action
             android:id="@+id/action_audioPreviewFragment_to_audioSubPackagesFragment"
-            app:destination="@id/audioSubPackagesFragment"
-            />
+            app:destination="@id/audioSubPackagesFragment" />
+        <action
+            android:id="@+id/action_audioPreviewFragment_to_mediaPlayerFragment"
+            app:destination="@id/mediaPlayerFragment" />
     </fragment>
     <fragment
         android:id="@+id/audioSubPackagesFragment"
@@ -56,8 +58,7 @@
             app:argType="string" />
         <action
             android:id="@+id/action_audioSubPackagesFragment_to_mediaPlayerFragment"
-            app:destination="@id/mediaPlayerFragment"
-            />
+            app:destination="@id/mediaPlayerFragment" />
     </fragment>
     <fragment
         android:id="@+id/mediaPlayerFragment"
@@ -69,6 +70,9 @@
         <argument
             android:name="subAudioId"
             app:argType="integer" />
+        <argument
+            android:name="isFromPreview"
+            app:argType="boolean" />
     </fragment>
     <fragment
         android:id="@+id/audioBooksFragment"

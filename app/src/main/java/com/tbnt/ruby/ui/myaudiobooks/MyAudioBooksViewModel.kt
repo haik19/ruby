@@ -14,8 +14,8 @@ class MyAudioBooksViewModel(private val repo: RubyDataRepo) : ViewModel() {
     private val _myAudioBooksFlow = MutableStateFlow<List<MyAudioBook>?>(null)
     val myAudioBooksFlow = _myAudioBooksFlow.asStateFlow()
 
-    fun loadMyAudioBooks(langCode: String = "ENG") = viewModelScope.launch(Dispatchers.Default) {
-        repo.gePurchasedData(langCode)?.let { apiModel ->
+    fun loadMyAudioBooks() = viewModelScope.launch(Dispatchers.Default) {
+        repo.gePurchasedData()?.let { apiModel ->
             val myAudioBooks = mutableListOf<MyAudioBook>()
             apiModel.audioBooks.forEach { audioBook ->
                 myAudioBooks.add(

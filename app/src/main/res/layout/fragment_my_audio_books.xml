@@ -3,7 +3,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity"
     android:background="#F2F4F8">
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/empty_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="empty_text, empty_btn" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/content_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="my_audio_rv,title" />
 
     <TextView
         android:id="@+id/title"
@@ -28,14 +42,38 @@
         app:layout_constraintTop_toBottomOf="@id/title" />
 
     <com.tbnt.ruby.ui.common.AudionBtn
-        android:id="@+id/audio_btn"
+        android:id="@+id/change_language_btn"
         android:layout_width="match_parent"
         android:layout_height="54dp"
-        android:layout_marginBottom="16dp"
         android:layout_marginHorizontal="16dp"
-        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginBottom="16dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <TextView
+        android:id="@+id/empty_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/empty_txt"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tbnt.ruby.ui.common.AudionBtn
+        android:id="@+id/empty_btn"
+        android:layout_width="wrap_content"
+        android:paddingHorizontal="16dp"
+        android:layout_height="54dp"
+        android:layout_marginHorizontal="60dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/empty_text" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

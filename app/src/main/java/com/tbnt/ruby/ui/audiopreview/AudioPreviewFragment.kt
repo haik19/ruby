@@ -36,12 +36,22 @@ class AudioPreviewFragment : Fragment() {
         binding.run {
             playBtn.apply {
                 setOnClickListener {
-                    findNavController().navigate(
-                        AudioPreviewFragmentDirections.actionAudioPreviewFragmentToAudioSubPackagesFragment(
-                            audioPreviewId,
-                            audioTitle
+                    if (playBtn.getText().toString() == getString(R.string.gen_try)) {
+                        //PLAY AUDIO
+                        findNavController().navigate(
+                            AudioPreviewFragmentDirections.actionAudioPreviewFragmentToMediaPlayerFragment(
+                                audioPreviewId,
+                                0, true
+                            )
                         )
-                    )
+                    } else {
+                        findNavController().navigate(
+                            AudioPreviewFragmentDirections.actionAudioPreviewFragmentToAudioSubPackagesFragment(
+                                audioPreviewId,
+                                audioTitle
+                            )
+                        )
+                    }
                 }
                 setTextColor("#F5C037")
                 setText(getString(R.string.gen_try))

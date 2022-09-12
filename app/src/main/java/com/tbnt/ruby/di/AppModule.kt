@@ -12,8 +12,11 @@ import com.tbnt.ruby.ui.audiosubpackages.AudioSubPackagesViewModel
 import com.tbnt.ruby.ui.auidiobooks.AudioBooksViewModel
 import com.tbnt.ruby.ui.mediaplayer.MediaPlayerViewModel
 import com.tbnt.ruby.ui.myaudiobooks.MyAudioBooksViewModel
+import com.tbnt.ruby.ui.profile.LanguageViewModel
 import com.tbnt.ruby.ui.splash.SplashViewModel
 import com.tbnt.ruby.ui.tips.TipsPageViewModel
+import org.koin.android.ext.koin.androidApplication
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import java.util.*
@@ -29,7 +32,7 @@ fun appModule(context: Context) = module {
     }
 
     single<RubyDataRepo> {
-        RubyDataRepoImpl(get(), Gson(), Locale.getDefault().isO3Language)
+        RubyDataRepoImpl(get(), Gson(), Locale.getDefault().isO3Language, context.filesDir)
     }
 
     viewModel {
@@ -58,5 +61,9 @@ fun appModule(context: Context) = module {
 
     viewModel {
         MediaPlayerViewModel(get())
+    }
+
+    viewModel {
+        LanguageViewModel()
     }
 }

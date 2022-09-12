@@ -24,6 +24,8 @@ class AudionBtn(context: Context, attrs: AttributeSet) : ConstraintLayout(contex
         binding.btnTitle.text = text
     }
 
+    fun getText(): CharSequence = binding.btnTitle.text
+
     fun setTextColor(color: String) {
         if (color.isEmpty()) return
         binding.btnTitle.setTextColor(color.toColorInt())

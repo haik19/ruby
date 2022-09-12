@@ -52,7 +52,7 @@
 
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/guid_language"
+            android:id="@+id/guid_language_code"
             style="@style/PageSmallTextStyle"
             android:text="Русский"
             app:layout_constraintTop_toBottomOf="@id/space1"

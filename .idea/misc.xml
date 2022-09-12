@@ -48,10 +48,11 @@
         <entry key="app/src/main/res/layout/audio_sub_packages_layout.xml" value="0.25" />
         <entry key="app/src/main/res/layout/feedback_fragment_layout.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_audio_books.xml" value="0.335" />
-        <entry key="app/src/main/res/layout/fragment_my_audio_books.xml" value="0.19610507246376813" />
+        <entry key="app/src/main/res/layout/fragment_my_audio_books.xml" value="0.20199275362318841" />
         <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.24104683195592286" />
         <entry key="app/src/main/res/layout/fragment_tips.xml" value="0.165" />
         <entry key="app/src/main/res/layout/header_title_layout.xml" value="0.19610507246376813" />
+        <entry key="app/src/main/res/layout/language_menu_layout.xml" value="0.19610507246376813" />
         <entry key="app/src/main/res/layout/main_layout.xml" value="0.1" />
         <entry key="app/src/main/res/layout/media_player_layout.xml" value="0.32027130126953124" />
         <entry key="app/src/main/res/layout/my_audio_file_item_layout.xml" value="0.375" />

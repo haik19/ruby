@@ -9,6 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.tbnt.ruby.R
 import com.tbnt.ruby.databinding.FragmentProfileBinding
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 private const val PLAY_STORE_LINK =
     "https://play.google.com/store/apps/details?id=am.ggtaxi.main"
@@ -19,6 +21,8 @@ private const val PLAY_STORE_PACKAGE =
 private const val HELP_SUPPORT = "https://play.google.com/store/games?hl=ru&gl=US"
 
 class SettingsFragment : Fragment() {
+
+    private val languageViewModel: LanguageViewModel by sharedViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,6 +52,14 @@ class SettingsFragment : Fragment() {
             sharingIntent.putExtra(Intent.EXTRA_TEXT, "our app");//TODO share
             sharingIntent.type = "text/plain"
             startActivity(Intent.createChooser(sharingIntent, "Share"))
+        }
+
+        binding.guideLanguage.setOnClickListener {
+            SettingsBottomMenu.show(parentFragmentManager)
+        }
+
+        languageViewModel.languageDataLiveData.observe(viewLifecycleOwner) {
+            binding.guidLanguageCode.text = it
         }
     }
 }

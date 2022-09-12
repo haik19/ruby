@@ -15,10 +15,12 @@ data class AudioBook(
     @SerializedName("image_url") val imageUrl: String,
     @SerializedName("name") val name: String,
     @SerializedName("rating_stars") val ratingStars: Float,
-    @SerializedName("sample_audio_file_name") val sampleAudioFileName: String,
+    @SerializedName("sample_adio_file_name") val sampleAudioFileName: String, // TODO GETTER CHANGE AND NAME
     @SerializedName("subpackage") val subpackage: List<Subpackage>,
     @SerializedName("tips") val tips: List<String>,
-)
+) {
+    fun getValue() = sampleAudioFileName ?: "Will Smith - Miami"
+}
 
 data class Subpackage(
     @SerializedName("audio_file_name") val audioFileName: String,
