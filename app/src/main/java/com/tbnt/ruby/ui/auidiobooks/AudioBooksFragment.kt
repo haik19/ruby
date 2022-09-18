@@ -9,12 +9,14 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tbnt.ruby.DataViewModel
 import com.tbnt.ruby.R
 import com.tbnt.ruby.databinding.FragmentAudioBooksBinding
 import com.tbnt.ruby.setRoundedCorner
 import com.tbnt.ruby.toPx
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.math.abs
 
@@ -23,6 +25,7 @@ class AudioBooksFragment : Fragment() {
     var verticalOffset = -1f
     private val ribbonTranslationY = 70.toPx
     private val audioBooksViewModel: AudioBooksViewModel by viewModel()
+    private val dataViewModel: DataViewModel by sharedViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,7 +55,12 @@ class AudioBooksFragment : Fragment() {
             }
         }.launchIn(viewLifecycleOwner.lifecycleScope)
 
+        dataViewModel.dataReadyFlow.onEach {
+            if (it) audioBooksViewModel.loadAudioBooks()
+        }.launchIn(viewLifecycleOwner.lifecycleScope)
+
         audioBooksViewModel.loadAudioBooks()
+
         binding.fabAddOItransferIn.setRoundedCorner(26f)
         binding.audioRv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {

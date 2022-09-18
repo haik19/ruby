@@ -3,6 +3,7 @@ package com.tbnt.ruby.di
 import android.content.Context
 import com.google.firebase.database.FirebaseDatabase
 import com.google.gson.Gson
+import com.tbnt.ruby.DataViewModel
 import com.tbnt.ruby.PreferencesService
 import com.tbnt.ruby.PreferencesServiceImpl
 import com.tbnt.ruby.repo.RubyDataRepo
@@ -15,8 +16,6 @@ import com.tbnt.ruby.ui.myaudiobooks.MyAudioBooksViewModel
 import com.tbnt.ruby.ui.profile.LanguageViewModel
 import com.tbnt.ruby.ui.splash.SplashViewModel
 import com.tbnt.ruby.ui.tips.TipsPageViewModel
-import org.koin.android.ext.koin.androidApplication
-import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import java.util.*
@@ -33,6 +32,10 @@ fun appModule(context: Context) = module {
 
     single<RubyDataRepo> {
         RubyDataRepoImpl(get(), Gson(), Locale.getDefault().isO3Language, context.filesDir)
+    }
+
+    viewModel {
+        DataViewModel(get())
     }
 
     viewModel {

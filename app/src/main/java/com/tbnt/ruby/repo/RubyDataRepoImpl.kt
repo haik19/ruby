@@ -6,9 +6,10 @@ import com.google.firebase.storage.ktx.storage
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tbnt.ruby.PreferencesService
-import com.tbnt.ruby.supportingLanCode
 import com.tbnt.ruby.repo.model.AudioBook
 import com.tbnt.ruby.repo.model.LanguageData
+import com.tbnt.ruby.supportingLanCode
+import kotlinx.coroutines.flow.flow
 import java.io.File
 
 
@@ -32,7 +33,7 @@ class RubyDataRepoImpl(
     private var rusSimpleFolderPath = ""
     private var engSimpleFolderPath = ""
 
-    override suspend fun storeData(snapshot: DataSnapshot) {
+    override fun storeData(snapshot: DataSnapshot) = flow {
         val previousVersion = prefs.preference(UPDATE_VERSION_KEY, 0)
         val newVersion: Int =
             (snapshot.getValue(true) as? Map<*, *>)?.get(UPDATE_VERSION_FIELD) as? Int ?: 1
@@ -40,9 +41,9 @@ class RubyDataRepoImpl(
             prefs.putPreferences(UPDATE_VERSION_KEY, newVersion)
             val dataJson = gson.toJson(((snapshot.getValue(false) as Map<*, *>)[DATA_VERSION]))
             prefs.putPreferences(NEW_VERSION_DATA_KEY, dataJson.toString())
-            downloadSimpleAudios()
+//            downloadSimpleAudios()
+            emit(true)//data ready
         }
-
     }
 
     private fun downloadSimpleAudios() {

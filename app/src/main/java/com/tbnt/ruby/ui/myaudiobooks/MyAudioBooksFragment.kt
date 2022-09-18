@@ -2,14 +2,15 @@ package com.tbnt.ruby.ui.myaudiobooks
 
 import android.os.Bundle
 import android.preference.PreferenceManager
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tbnt.ruby.DataViewModel
 import com.tbnt.ruby.R
 import com.tbnt.ruby.databinding.FragmentMyAudioBooksBinding
 import com.tbnt.ruby.ui.profile.LANGUAGE_CODE_KEY
@@ -22,6 +23,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class MyAudioBooksFragment : Fragment() {
     private val myAudioBooksViewModel: MyAudioBooksViewModel by viewModel()
     private val languageViewModel: LanguageViewModel by sharedViewModel()
+    private val dataViewModel: DataViewModel by sharedViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -62,6 +64,11 @@ class MyAudioBooksFragment : Fragment() {
                 }
             }
         }.launchIn(viewLifecycleOwner.lifecycleScope)
+
+        dataViewModel.dataReadyFlow.onEach {
+            if (it) myAudioBooksViewModel.loadMyAudioBooks()
+        }.launchIn(viewLifecycleOwner.lifecycleScope)
+
         myAudioBooksViewModel.loadMyAudioBooks()
 
         binding.myAudioRv.layoutManager = LinearLayoutManager(view.context)
