@@ -19,7 +19,7 @@ private const val UPDATE_VERSION_FIELD = "update_version"
 private const val DATA_VERSION = "1-0-0"
 private const val PURCHASED_DATA_KEY = "purchased_data_key"
 private const val ENG = "ENG"
-private const val SIMPLE = "_SIMPLE"
+private const val SIMPLE = "SampleAudiobooks"
 
 class RubyDataRepoImpl(
     private val prefs: PreferencesService,
@@ -38,10 +38,10 @@ class RubyDataRepoImpl(
         val newVersion: Int =
             (snapshot.getValue(true) as? Map<*, *>)?.get(UPDATE_VERSION_FIELD) as? Int ?: 1
         if (newVersion > previousVersion) {
-            prefs.putPreferences(UPDATE_VERSION_KEY, newVersion)
             val dataJson = gson.toJson(((snapshot.getValue(false) as Map<*, *>)[DATA_VERSION]))
             prefs.putPreferences(NEW_VERSION_DATA_KEY, dataJson.toString())
-//            downloadSimpleAudios()
+            prefs.putPreferences(UPDATE_VERSION_KEY, newVersion)
+            downloadSimpleAudios()
             emit(true)//data ready
         }
     }
@@ -55,8 +55,8 @@ class RubyDataRepoImpl(
             crateAudioFolders(languageKey)
             languageData.audioBooks.forEach { audioBook ->
                 downloadAndStoreAudioFile(
-                    audioBook.getValue().plus(".mp3"),
-                    filePath.absolutePath + File.separator + languageKey.plus(SIMPLE)
+                    audioBook.sampleAudioFileName.plus(".mp3"),
+                    filePath.absolutePath + File.separator + SIMPLE + File.separator + languageKey
                 )
             }
         }
@@ -68,14 +68,16 @@ class RubyDataRepoImpl(
     ) {
         val localFile = File(exportFilePath, fileName)
         localFile.createNewFile()
-        val storageRef = Firebase.storage.reference
+        val storageRef = Firebase.storage.reference.child(SIMPLE)
+            .child(languageCode.supportingLanCode().uppercase())
         val islandRef = storageRef.child(fileName)
         islandRef.getFile(localFile)
     }
 
     private fun crateAudioFolders(langCode: String) {
         val langFolder = File(filePath.absolutePath + File.separator + langCode)
-        val langFolderSimple = File(filePath.absolutePath + File.separator + langCode.plus(SIMPLE))
+        val langFolderSimple =
+            File(filePath.absolutePath + File.separator + SIMPLE + File.separator + langCode)
         rusFolderPath = langFolder.absolutePath
         rusSimpleFolderPath = langFolderSimple.absolutePath
         if (!langFolder.exists()) {

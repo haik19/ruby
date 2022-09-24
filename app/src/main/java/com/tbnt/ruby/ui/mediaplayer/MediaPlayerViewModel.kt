@@ -25,7 +25,7 @@ class MediaPlayerViewModel(private val repo: RubyDataRepo) : ViewModel() {
                         AudioPlayerEntity(
                             it.imageUrl,
                             it.name,
-                            simpleAudioName = it.sampleAudioFileName ?: it.getValue()
+                            it.sampleAudioFileName
                         )
                     }
                 }

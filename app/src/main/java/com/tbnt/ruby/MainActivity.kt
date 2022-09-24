@@ -28,11 +28,10 @@ class MainActivity : FragmentActivity() {
         keysField.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 dataViewModel.storeData(snapshot)
-                keysField.removeEventListener(this)
             }
 
             override fun onCancelled(error: DatabaseError) {
-                keysField.removeEventListener(this)
+                //no need
             }
         })
 

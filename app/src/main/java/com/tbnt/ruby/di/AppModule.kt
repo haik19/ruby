@@ -14,7 +14,6 @@ import com.tbnt.ruby.ui.auidiobooks.AudioBooksViewModel
 import com.tbnt.ruby.ui.mediaplayer.MediaPlayerViewModel
 import com.tbnt.ruby.ui.myaudiobooks.MyAudioBooksViewModel
 import com.tbnt.ruby.ui.profile.LanguageViewModel
-import com.tbnt.ruby.ui.splash.SplashViewModel
 import com.tbnt.ruby.ui.tips.TipsPageViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -36,10 +35,6 @@ fun appModule(context: Context) = module {
 
     viewModel {
         DataViewModel(get())
-    }
-
-    viewModel {
-        SplashViewModel(get())
     }
 
     viewModel {

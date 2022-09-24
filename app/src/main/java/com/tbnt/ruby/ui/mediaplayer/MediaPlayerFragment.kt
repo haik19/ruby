@@ -24,7 +24,7 @@ import java.io.File
 import java.util.*
 
 private const val PROGRESS_UPDATE_STAMP = 100L
-private const val SIMPLE = "_SIMPLE"
+private const val SIMPLE = "SampleAudiobooks"
 
 class MediaPlayerFragment : Fragment(R.layout.media_player_layout) {
 
@@ -51,12 +51,13 @@ class MediaPlayerFragment : Fragment(R.layout.media_player_layout) {
                     if (mediaPlayerFragmentArgs.isFromPreview) {
                         setUpMediaPlayer(
                             binding, Uri.parse(
-                                view.context.filesDir.absolutePath + File.separator + Locale.getDefault().isO3Language.supportingLanCode()
-                                        + SIMPLE + File.separator + it.simpleAudioName.plus(".mp3")
+                                view.context.filesDir.absolutePath + File.separator
+                                        + SIMPLE + File.separator + Locale.getDefault().isO3Language.supportingLanCode() + File.separator + it.simpleAudioName.plus(
+                                    ".mp3"
+                                )
                             )
                         )
                     }
-
                 }
             }.launchIn(viewLifecycleOwner.lifecycleScope)
 
@@ -134,15 +135,21 @@ class MediaPlayerFragment : Fragment(R.layout.media_player_layout) {
     }
 
     private fun duration(milliseconds: Long): String {
-        val tempSecond = (milliseconds / 1000).toInt() % 60
-        val seconds = when {
-            tempSecond == 0 -> "00"
-            tempSecond < 10 -> "0$tempSecond"
-            else -> tempSecond
-        }
-        val minutes = (milliseconds / (1000 * 60) % 60).takeIf { it > 0 } ?: "00"
-        val hours = (milliseconds / (1000 * 60 * 60) % 24).takeIf { it > 0 } ?: "00"
-        return String.format("%s:%s:%s", hours, minutes, seconds)
+        val tempSecond = (milliseconds / 1000) % 60
+        val tempMinutes = (milliseconds / (1000 * 60) % 60)
+        val tempHours = (milliseconds / (1000 * 60 * 60) % 24)
+        return String.format(
+            "%s:%s:%s",
+            displayTemple(tempHours),
+            displayTemple(tempMinutes),
+            displayTemple(tempSecond)
+        )
+    }
+
+    private fun displayTemple(duration: Long) = when {
+        duration == 0L -> "00"
+        duration < 10L -> "0$duration"
+        else -> duration
     }
 
     override fun onStop() {
