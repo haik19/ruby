@@ -35,9 +35,5 @@ h
 8app/src/main/java/com/tbnt/ruby/entity/ResponseStatus.kt,c/8/c878293fcecea6dc19a438192242e85d1c8acaa6
 <
 build.gradle,f/0/f07866736216be0ee2aba49e392191aeae700a35
-r
-Bapp/src/main/java/com/tbnt/ruby/ui/splash/MainActivityViewModel.kt,c/4/c4a72977a768232cdd4beffd3c289c68bcb12e04
-]
--app/src/main/java/com/tbnt/ruby/Extensions.kt,7/e/7e92cd185dd329f21828b7e6ec9d9b5a8cc98380
 d
 4app/src/main/java/com/tbnt/ruby/ui/ExpandableView.kt,9/1/9171a237ab519a8cbdf01b0269b939d65774dd04

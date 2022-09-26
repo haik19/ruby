@@ -1,20 +1,15 @@
 package com.tbnt.ruby.ui.profile
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import com.google.android.gms.common.util.SharedPreferencesUtils
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.tbnt.ruby.PreferencesService
 import com.tbnt.ruby.R
 import com.tbnt.ruby.databinding.LanguageMenuLayoutBinding
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import java.util.prefs.Preferences
 
 const val LANGUAGE_CODE_KEY = "language_code_key"
 

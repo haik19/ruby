@@ -1,7 +1,9 @@
 package com.tbnt.ruby.repo
 
+import android.net.Uri
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FileDownloadTask
 import com.google.firebase.storage.ktx.storage
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -9,7 +11,9 @@ import com.tbnt.ruby.PreferencesService
 import com.tbnt.ruby.repo.model.AudioBook
 import com.tbnt.ruby.repo.model.LanguageData
 import com.tbnt.ruby.supportingLanCode
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.withContext
 import java.io.File
 
 
@@ -20,6 +24,7 @@ private const val DATA_VERSION = "1-0-0"
 private const val PURCHASED_DATA_KEY = "purchased_data_key"
 private const val ENG = "ENG"
 private const val SIMPLE = "SampleAudiobooks"
+private const val AUDIOBOOKS = "Audiobooks"
 
 class RubyDataRepoImpl(
     private val prefs: PreferencesService,
@@ -27,11 +32,6 @@ class RubyDataRepoImpl(
     private val languageCode: String = ENG,
     private val filePath: File
 ) : RubyDataRepo {
-
-    private var rusFolderPath = ""
-    private var engFolderPath = ""
-    private var rusSimpleFolderPath = ""
-    private var engSimpleFolderPath = ""
 
     override fun storeData(snapshot: DataSnapshot) = flow {
         val previousVersion = prefs.preference(UPDATE_VERSION_KEY, 0)
@@ -54,7 +54,8 @@ class RubyDataRepoImpl(
         productionHashMap.forEach { (languageKey, languageData) ->
             crateAudioFolders(languageKey)
             languageData.audioBooks.forEach { audioBook ->
-                downloadAndStoreAudioFile(
+                downloadAndStoreSimpleAudioFile(
+                    languageKey,
                     audioBook.sampleAudioFileName.plus(".mp3"),
                     filePath.absolutePath + File.separator + SIMPLE + File.separator + languageKey
                 )
@@ -62,27 +63,30 @@ class RubyDataRepoImpl(
         }
     }
 
-    private fun downloadAndStoreAudioFile(
+    private fun downloadAndStoreSimpleAudioFile(
+        languageKey: String,
         fileName: String,
         exportFilePath: String,
-    ) {
-        val localFile = File(exportFilePath, fileName)
-        localFile.createNewFile()
+    ): FileDownloadTask {
         val storageRef = Firebase.storage.reference.child(SIMPLE)
-            .child(languageCode.supportingLanCode().uppercase())
-        val islandRef = storageRef.child(fileName)
-        islandRef.getFile(localFile)
+            .child(languageKey).child(fileName)
+        return storageRef.getFile(File(exportFilePath, fileName))
+    }
+
+    private fun downloadAndStoreFullAudioFile(
+        languageKey: String,
+        packageId: String,
+        fileName: String,
+        exportFilePath: String,
+    ): FileDownloadTask {
+        val storageRef = Firebase.storage.reference.child(AUDIOBOOKS)
+            .child(languageKey).child(packageId).child(fileName)
+        return storageRef.getFile(File(exportFilePath, fileName))
     }
 
     private fun crateAudioFolders(langCode: String) {
-        val langFolder = File(filePath.absolutePath + File.separator + langCode)
         val langFolderSimple =
             File(filePath.absolutePath + File.separator + SIMPLE + File.separator + langCode)
-        rusFolderPath = langFolder.absolutePath
-        rusSimpleFolderPath = langFolderSimple.absolutePath
-        if (!langFolder.exists()) {
-            langFolder.mkdirs()
-        }
         if (!langFolderSimple.exists()) {
             langFolderSimple.mkdirs()
         }
@@ -93,7 +97,7 @@ class RubyDataRepoImpl(
         val jsonString = prefs.preference(NEW_VERSION_DATA_KEY, "{}")
         val productionHashMap: Map<String, LanguageData> = gson.fromJson(jsonString, object :
             TypeToken<Map<String, LanguageData>>() {}.type)
-        return productionHashMap[languageCode.supportingLanCode().uppercase()]
+        return productionHashMap[languageCode.supportingLanCode()]
     }
 
     override suspend fun storePurchasedData(id: String) {
@@ -114,6 +118,31 @@ class RubyDataRepoImpl(
         prefs.preference(PURCHASED_DATA_KEY, "{}")
     }
 
+    override fun downloaSimpledFile(uri: Uri, fileName: String) =
+        downloadAndStoreSimpleAudioFile(
+            languageCode.supportingLanCode(),
+            fileName.plus(".mp3"),
+            filePath.absolutePath + File.separator + SIMPLE + File.separator + languageCode.supportingLanCode()
+        )
+
+    override suspend fun downloadPackage(packageId: String, langCode: String) {
+        val langFolder =
+            File(filePath.absolutePath + File.separator + AUDIOBOOKS + File.separator + langCode + File.separator + packageId)
+        if (!langFolder.exists()) {
+            langFolder.mkdirs()
+        }
+        withContext(Dispatchers.Default) {
+            getData()?.let { apiModel ->
+                apiModel.audioBooks.find { it.id == packageId }?.run {
+                    subpackage.forEach {
+                        downloadAndStoreFullAudioFile(langCode, packageId, it.audioFileName.plus(".mp3"), langFolder.absolutePath)
+                    }
+                }
+            }
+        }
+    }
+
+
     override suspend fun gePurchasedData(): LanguageData? {
         val jsonString = prefs.preference(PURCHASED_DATA_KEY, "{}")
         val productionHashMap: Map<String, LanguageData> = gson.fromJson(jsonString, object :
@@ -125,7 +154,7 @@ class RubyDataRepoImpl(
         return gson.fromJson<Map<String, LanguageData>?>(
             prefs.preference(PURCHASED_DATA_KEY, "{}"),
             object : TypeToken<Map<String, LanguageData>>() {}.type
-        ).toMutableMap()[languageCode.uppercase()]?.audioBooks?.map { it.id } ?: emptyList()
+        ).toMutableMap()[languageCode.supportingLanCode()]?.audioBooks?.map { it.id } ?: emptyList()
     }
 
     private fun addPurchasedBooks(

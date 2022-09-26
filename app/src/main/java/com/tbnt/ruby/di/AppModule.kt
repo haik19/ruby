@@ -30,7 +30,12 @@ fun appModule(context: Context) = module {
     }
 
     single<RubyDataRepo> {
-        RubyDataRepoImpl(get(), Gson(), Locale.getDefault().isO3Language, context.filesDir)
+        RubyDataRepoImpl(
+            get(),
+            Gson(),
+            Locale.getDefault().isO3Language,
+            context.filesDir
+        )
     }
 
     viewModel {

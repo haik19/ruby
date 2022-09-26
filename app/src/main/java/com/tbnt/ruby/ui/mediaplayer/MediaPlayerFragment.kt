@@ -1,5 +1,6 @@
 package com.tbnt.ruby.ui.mediaplayer
 
+import android.content.Context
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
@@ -7,6 +8,7 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.widget.SeekBar
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -14,6 +16,8 @@ import androidx.navigation.fragment.navArgs
 import com.squareup.picasso.Picasso
 import com.tbnt.ruby.R
 import com.tbnt.ruby.databinding.MediaPlayerLayoutBinding
+import com.tbnt.ruby.entity.AudioPlayerEntity
+import com.tbnt.ruby.entity.State
 import com.tbnt.ruby.setRoundedCorner
 import com.tbnt.ruby.supportingLanCode
 import com.tbnt.ruby.toPx
@@ -25,6 +29,7 @@ import java.util.*
 
 private const val PROGRESS_UPDATE_STAMP = 100L
 private const val SIMPLE = "SampleAudiobooks"
+private const val AUDIOBOOKS = "Audiobooks"
 
 class MediaPlayerFragment : Fragment(R.layout.media_player_layout) {
 
@@ -44,27 +49,58 @@ class MediaPlayerFragment : Fragment(R.layout.media_player_layout) {
             binding.backBtn.setOnClickListener {
                 findNavController().popBackStack()
             }
-            mediaPlayerViewModel.playerDataStateFlow.onEach {
+            mediaPlayerViewModel.playerDataFlow.onEach {
                 it?.let {
+                    binding.retryBtn.isVisible =
+                        mediaPlayerViewModel.isFileInValid(
+                            resolvedUri(mediaPlayerFragmentArgs, view.context, it)
+                        )
                     binding.audioTitle.text = it.title
                     Picasso.get().load(it.imageUrl).into(binding.imagePreview)
-                    if (mediaPlayerFragmentArgs.isFromPreview) {
-                        setUpMediaPlayer(
-                            binding, Uri.parse(
-                                view.context.filesDir.absolutePath + File.separator
-                                        + SIMPLE + File.separator + Locale.getDefault().isO3Language.supportingLanCode() + File.separator + it.simpleAudioName.plus(
-                                    ".mp3"
-                                )
-                            )
-                        )
-                    }
+                    setUpMediaPlayer(
+                        binding,
+                        resolvedUri(mediaPlayerFragmentArgs, view.context, it)
+                    )
                 }
             }.launchIn(viewLifecycleOwner.lifecycleScope)
 
-            loadMediaData()
+            binding.retryBtn.setOnClickListener {
+                mediaPlayerViewModel.playerDataFlow.value?.let {
+                    mediaPlayerViewModel.downLoadFile(
+                        resolvedUri(mediaPlayerFragmentArgs, view.context, it),
+                        if (mediaPlayerFragmentArgs.isFromPreview) it.simpleAudioName else it.fullAudioName
+                    ).addOnSuccessListener {
+                        loadMediaData(State.RETRY)
+                    }
+                }
+            }
+            loadMediaData(State.INITIAL)
         }
     }
 
+    private fun resolvedUri(
+        args: MediaPlayerFragmentArgs,
+        context: Context,
+        audioPlayerEntity: AudioPlayerEntity
+    ) = if (args.isFromPreview) simpleFilePathUri(context, audioPlayerEntity) else fullFilePathUri(
+        context,
+        audioPlayerEntity
+    )
+
+    private fun simpleFilePathUri(context: Context, audioPlayerEntity: AudioPlayerEntity) =
+        Uri.parse(
+            context.filesDir.absolutePath + File.separator
+                    + SIMPLE + File.separator + Locale.getDefault().isO3Language.supportingLanCode() + File.separator + audioPlayerEntity.simpleAudioName.plus(
+                ".mp3"
+            )
+        )
+
+    private fun fullFilePathUri(context: Context, audioPlayerEntity: AudioPlayerEntity) = Uri.parse(
+        context.filesDir.absolutePath + File.separator
+                + AUDIOBOOKS + File.separator + Locale.getDefault().isO3Language.supportingLanCode() + File.separator + mediaPlayerFragmentArgs.audioId + File.separator + audioPlayerEntity.fullAudioName.plus(
+            ".mp3"
+        )
+    )
 
     private fun setUpMediaPlayer(binding: MediaPlayerLayoutBinding, uri: Uri) {
         mediaPlayer = MediaPlayer.create(requireContext(), uri)
@@ -163,17 +199,19 @@ class MediaPlayerFragment : Fragment(R.layout.media_player_layout) {
         viewBinding = null
     }
 
-    private fun loadMediaData() {
+    private fun loadMediaData(state: State) {
         if (mediaPlayerFragmentArgs.isFromPreview) {
             mediaPlayerViewModel.loadPlayerData(
                 mediaPlayerFragmentArgs.audioId,
-                -1
+                -1,
+                state,
             )
         } else {
             //isFrom sub packages
             mediaPlayerViewModel.loadPlayerData(
                 mediaPlayerFragmentArgs.audioId,
-                mediaPlayerFragmentArgs.subAudioId
+                mediaPlayerFragmentArgs.subAudioId,
+                state,
             )
         }
     }

@@ -56,3 +56,8 @@ fun Activity?.isVisible(view: View?): Boolean {
     val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     return cm.activeNetworkInfo != null && cm.activeNetworkInfo!!.isConnected
 }
+
+fun String.toLanguageCode(context: Context) = when(this){
+       context.getString(R.string.gen_rus) -> "RUS"
+      else -> "ENG"
+}

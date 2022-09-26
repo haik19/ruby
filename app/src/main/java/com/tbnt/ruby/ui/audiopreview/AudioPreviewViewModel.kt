@@ -36,4 +36,10 @@ class AudioPreviewViewModel(private val repo: RubyDataRepo) : ViewModel() {
     fun storePurchasedData(id: String) = viewModelScope.launch(Dispatchers.Default) {
         repo.storePurchasedData(id)
     }
+
+    fun downloadPackage(id: String, langCode: String) =
+        viewModelScope.launch(Dispatchers.Default) {
+            repo.downloadPackage(id, langCode)
+        }
+
 }
