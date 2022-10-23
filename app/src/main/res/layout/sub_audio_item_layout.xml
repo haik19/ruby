@@ -28,6 +28,17 @@
         app:layout_constraintRight_toRightOf="@id/preview_image"
         app:layout_constraintTop_toTopOf="@id/preview_image" />
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/progress_view"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/preview_image"
+        app:layout_constraintLeft_toLeftOf="@+id/preview_image"
+        app:layout_constraintRight_toRightOf="@+id/preview_image"
+        app:layout_constraintTop_toTopOf="@+id/preview_image"
+        app:lottie_rawRes="@raw/downloading_animation" />
+
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/audio_title"
         style="@style/PageMiddleTextStyle"

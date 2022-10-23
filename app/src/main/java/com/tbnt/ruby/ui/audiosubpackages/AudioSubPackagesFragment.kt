@@ -37,10 +37,10 @@ class AudioSubPackagesFragment : Fragment() {
                 RecyclerView.VERTICAL
             )
         )
-        val adapter = AudioSubPackagesAdapter { id, index ->
+        val adapter = AudioSubPackagesAdapter { id, index, fileName ->
             findNavController().navigate(
                 AudioSubPackagesFragmentDirections.actionAudioSubPackagesFragmentToMediaPlayerFragment(
-                    id, index, false
+                    id, index, false, "", fileName
                 )
             )
         }

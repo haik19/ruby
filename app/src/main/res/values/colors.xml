@@ -8,9 +8,13 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="gray_20">#32C2C0C0</color>
+    <color name="gray_retry">#757474</color>
+    <color name="gray_5">#7CC2C0C0</color>
+    <color name="gray_bg">#535353</color>
     <color name="gray">#353535</color>
     <color name="gray_22">#22BFBDBD</color>
     <color name="blue_ribbon">#064c70 </color>
     <color name="bg_color">#F2F4F8 </color>
     <color name="blue">#165EEF</color>
+    <color name="white_transparent_50">#80F7F7F8</color>
 </resources>

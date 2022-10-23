@@ -24,6 +24,8 @@ class AudioPreviewFragment : Fragment() {
     private val audioPreviewViewModel: AudioPreviewViewModel by viewModel()
     private var audioTitle: String = ""
     private var audioPreviewId: String = ""
+    private var fullAudioFileName: String = ""
+    private var simpleAudioFileName: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,7 +46,7 @@ class AudioPreviewFragment : Fragment() {
                         findNavController().navigate(
                             AudioPreviewFragmentDirections.actionAudioPreviewFragmentToMediaPlayerFragment(
                                 audioPreviewId,
-                                0, true
+                                0, true, simpleAudioFileName, fullAudioFileName
                             )
                         )
                     } else {
@@ -95,6 +97,8 @@ class AudioPreviewFragment : Fragment() {
                 }
                 audioTitle = it.title
                 audioPreviewId = it.audioId
+                simpleAudioFileName = it.simpleFileName
+                fullAudioFileName = it.fullAudioName
                 scrollableContent.previewTitle.text = title
                 scrollableContent.previewSubtitle.text =
                     getString(R.string.audio_files_count, audioFilesCount)

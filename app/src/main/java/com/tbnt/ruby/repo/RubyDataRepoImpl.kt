@@ -7,12 +7,15 @@ import com.google.firebase.storage.FileDownloadTask
 import com.google.firebase.storage.ktx.storage
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.tbnt.ruby.PreferencesService
+import com.tbnt.ruby.*
 import com.tbnt.ruby.repo.model.AudioBook
+import com.tbnt.ruby.repo.model.FileType
 import com.tbnt.ruby.repo.model.LanguageData
-import com.tbnt.ruby.supportingLanCode
+import com.tbnt.ruby.ui.mediaplayer.ProgressValues
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 import java.io.File
 
@@ -33,7 +36,13 @@ class RubyDataRepoImpl(
     private val filePath: File
 ) : RubyDataRepo {
 
-    override fun storeData(snapshot: DataSnapshot) = flow {
+    private val inProgressFiles = mutableListOf<String>()
+    private var fullAudioDataStateCallback: (dataState: DataState) -> Unit = {}
+
+    override fun storeData(
+        snapshot: DataSnapshot,
+        dataStateCallback: (dataState: DataState) -> Unit
+    ) = flow {
         val previousVersion = prefs.preference(UPDATE_VERSION_KEY, 0)
         val newVersion: Int =
             (snapshot.getValue(true) as? Map<*, *>)?.get(UPDATE_VERSION_FIELD) as? Int ?: 1
@@ -41,12 +50,12 @@ class RubyDataRepoImpl(
             val dataJson = gson.toJson(((snapshot.getValue(false) as Map<*, *>)[DATA_VERSION]))
             prefs.putPreferences(NEW_VERSION_DATA_KEY, dataJson.toString())
             prefs.putPreferences(UPDATE_VERSION_KEY, newVersion)
-            downloadSimpleAudios()
+            downloadSimpleAudios(dataStateCallback)
             emit(true)//data ready
         }
     }
 
-    private fun downloadSimpleAudios() {
+    private fun downloadSimpleAudios(dataStateCallback: (dataState: DataState) -> Unit) {
         val jsonString = prefs.preference(NEW_VERSION_DATA_KEY, "{}")
         val productionHashMap: Map<String, LanguageData> = gson.fromJson(jsonString, object :
             TypeToken<Map<String, LanguageData>>() {}.type)
@@ -54,11 +63,37 @@ class RubyDataRepoImpl(
         productionHashMap.forEach { (languageKey, languageData) ->
             crateAudioFolders(languageKey)
             languageData.audioBooks.forEach { audioBook ->
+                inProgressFiles.add(generateFileId(audioBook.id, audioBook.sampleAudioFileName))
                 downloadAndStoreSimpleAudioFile(
                     languageKey,
-                    audioBook.sampleAudioFileName.plus(".mp3"),
+                    audioBook.sampleAudioFileName.toMp3Format(),
                     filePath.absolutePath + File.separator + SIMPLE + File.separator + languageKey
-                )
+                ).addOnProgressListener {
+                    val progress: Float = calculateProgress(it)
+                    if (progress <= 0.0f) return@addOnProgressListener
+                    dataStateCallback(
+                        DataState(
+                            DataStatus.Progress,
+                            generateFileId(audioBook.id, audioBook.sampleAudioFileName),
+                            if (progress <= 0.0f) ProgressValues.PROGRESS_START.value else progress
+                        )
+                    )
+                }.addOnFailureListener {
+                    dataStateCallback(
+                        DataState(
+                            DataStatus.Failed,
+                            generateFileId(audioBook.id, audioBook.sampleAudioFileName)
+                        )
+                    )
+                }.addOnSuccessListener {
+                    dataStateCallback(
+                        DataState(
+                            DataStatus.Progress,
+                            generateFileId(audioBook.id, audioBook.sampleAudioFileName),
+                            ProgressValues.PROGRESS_COMPLETE.value
+                        )
+                    )
+                }
             }
         }
     }
@@ -90,7 +125,6 @@ class RubyDataRepoImpl(
         if (!langFolderSimple.exists()) {
             langFolderSimple.mkdirs()
         }
-
     }
 
     override suspend fun getData(): LanguageData? {
@@ -112,18 +146,64 @@ class RubyDataRepoImpl(
             val finalList = mutableListOf<AudioBook>()
             addCurrentPurchase(id, languageData, finalList)
             addPurchasedBooks(purchaseIds, languageData, finalList)
-            productionHashMap[languageKey] = LanguageData(finalList, emptyList())
+            productionHashMap[languageKey] = LanguageData(finalList, emptyList(), languageData.settingsInfo)
         }
         prefs.putPreferences(PURCHASED_DATA_KEY, gson.toJson(productionHashMap))
         prefs.preference(PURCHASED_DATA_KEY, "{}")
     }
 
-    override fun downloaSimpledFile(uri: Uri, fileName: String) =
-        downloadAndStoreSimpleAudioFile(
-            languageCode.supportingLanCode(),
-            fileName.plus(".mp3"),
-            filePath.absolutePath + File.separator + SIMPLE + File.separator + languageCode.supportingLanCode()
-        )
+    override fun downloadCurrentFile(
+        fileType: FileType,
+        uri: Uri,
+        fileName: String,
+        packageId: String,
+        audioChosenLanguage: String,
+        dataStateCallback: (dataState: DataState) -> Unit
+    ) {
+        when (fileType) {
+            FileType.SIMPLE -> {
+                downloadAndStoreSimpleAudioFile(
+                    languageCode.supportingLanCode(),
+                    fileName.toMp3Format(),
+                    filePath.absolutePath + File.separator + SIMPLE + File.separator + languageCode.supportingLanCode()
+                )
+            }
+            FileType.FULL -> {
+                val langFolder =
+                    File(filePath.absolutePath + File.separator + AUDIOBOOKS + File.separator + audioChosenLanguage + File.separator + packageId)
+                downloadAndStoreFullAudioFile(
+                    languageCode.supportingLanCode(),
+                    packageId,
+                    fileName.toMp3Format(),
+                    langFolder.absolutePath
+                )
+            }
+        }.addOnProgressListener { task ->
+            val progress: Float = calculateProgress(task)
+            dataStateCallback(
+                DataState(
+                    DataStatus.Progress,
+                    generateFileId(packageId, fileName),
+                    if (progress <= 0.0f) ProgressValues.PROGRESS_START.value else progress
+                )
+            )
+        }.addOnFailureListener {
+            dataStateCallback(
+                DataState(
+                    DataStatus.Failed,
+                    generateFileId(packageId, fileName)
+                )
+            )
+        }.addOnSuccessListener {
+            dataStateCallback(
+                DataState(
+                    DataStatus.Progress,
+                    generateFileId(packageId, fileName),
+                    ProgressValues.PROGRESS_COMPLETE.value
+                )
+            )
+        }
+    }
 
     override suspend fun downloadPackage(packageId: String, langCode: String) {
         val langFolder =
@@ -134,14 +214,78 @@ class RubyDataRepoImpl(
         withContext(Dispatchers.Default) {
             getData()?.let { apiModel ->
                 apiModel.audioBooks.find { it.id == packageId }?.run {
-                    subpackage.forEach {
-                        downloadAndStoreFullAudioFile(langCode, packageId, it.audioFileName.plus(".mp3"), langFolder.absolutePath)
+                    subpackage.forEach { subpackage ->
+                        inProgressFiles.add(
+                            generateFileId(
+                                packageId,
+                                subpackage.audioFileName
+                            )
+                        )
+                        downloadAndStoreFullAudioFile(
+                            langCode,
+                            packageId,
+                            subpackage.audioFileName.toMp3Format(),
+                            langFolder.absolutePath
+                        ).addOnProgressListener { task ->
+                            val progress: Float = calculateProgress(task)
+                            if (progress <= 0.0f) return@addOnProgressListener
+                            fullAudioDataStateCallback(
+                                DataState(
+                                    DataStatus.Progress,
+                                    generateFileId(packageId, subpackage.audioFileName),
+                                    if (progress <= 0.0f) ProgressValues.PROGRESS_START.value else progress
+                                )
+                            )
+                        }.addOnFailureListener {
+                            fullAudioDataStateCallback(
+                                DataState(
+                                    DataStatus.Failed,
+                                    generateFileId(packageId, subpackage.audioFileName)
+                                )
+                            )
+                        }.addOnSuccessListener {
+                            fullAudioDataStateCallback(
+                                DataState(
+                                    DataStatus.Progress,
+                                    generateFileId(packageId, subpackage.audioFileName),
+                                    ProgressValues.PROGRESS_COMPLETE.value
+                                )
+                            )
+                        }
                     }
                 }
             }
         }
     }
 
+    override fun checkFileStatus(fileId: String, uri: Uri): Flow<DataState> = flow {
+        emit(
+            when {
+                isFileValid(uri) -> DataState(
+                    DataStatus.Progress,
+                    fileId,
+                    ProgressValues.PROGRESS_COMPLETE.value
+                )
+                inProgressFiles.contains(fileId) -> DataState(
+                    DataStatus.Progress,
+                    fileId,
+                    ProgressValues.PROGRESS_START.value
+                )
+                else -> DataState(DataStatus.Failed, fileId)
+            }
+        )
+    }.flowOn(Dispatchers.Default)
+
+
+    private fun calculateProgress(
+        task:
+        FileDownloadTask.TaskSnapshot
+    ) =
+        (1.0f * task.bytesTransferred / task.totalByteCount).takeIf { it > 0.0f } ?: 0.0f
+
+    override fun listenFullAudioState(dataStateCallback: (dataState: DataState) -> Unit) {
+        fullAudioDataStateCallback = dataStateCallback
+    }
 
     override suspend fun gePurchasedData(): LanguageData? {
         val jsonString = prefs.preference(PURCHASED_DATA_KEY, "{}")

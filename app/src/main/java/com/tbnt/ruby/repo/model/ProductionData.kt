@@ -4,7 +4,13 @@ import com.google.gson.annotations.SerializedName
 
 data class LanguageData(
     @SerializedName("audiobooks") val audioBooks: List<AudioBook>,
-    @SerializedName("tips") val tips: List<TipsItem>
+    @SerializedName("tips") val tips: List<TipsItem>,
+    @SerializedName("settings_info") val settingsInfo: SettingsInfo
+)
+
+data class SettingsInfo(
+    @SerializedName("contact_mail") val contactEmail: String,
+    @SerializedName("terms_and_privacy_url") val termsUrl: String
 )
 
 data class AudioBook(

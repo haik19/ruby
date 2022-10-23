@@ -9,5 +9,7 @@ data class AudioPreviewEntity(
     val duration: String,
     val desc: String,
     val tips: String,
-    val isPurchased: Boolean
+    val isPurchased: Boolean,
+    val simpleFileName: String,
+    val fullAudioName: String,
 )

@@ -16,6 +16,7 @@
         <entry key="app/src/main/res/drawable/audio_books_icon_drawble.xml" value="0.118" />
         <entry key="app/src/main/res/drawable/audio_books_icon_selector.xml" value="0.118" />
         <entry key="app/src/main/res/drawable/audio_btn_layout.xml" value="0.118" />
+        <entry key="app/src/main/res/drawable/circle_retry_bg.xml" value="0.112" />
         <entry key="app/src/main/res/drawable/close_btn_bg.xml" value="0.118" />
         <entry key="app/src/main/res/drawable/expand.xml" value="0.118" />
         <entry key="app/src/main/res/drawable/ic_baseline_co_present_24.xml" value="0.118" />
@@ -29,6 +30,7 @@
         <entry key="app/src/main/res/drawable/ic_baseline_library_music_24_yellow.xml" value="0.118" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.118" />
         <entry key="app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.118" />
+        <entry key="app/src/main/res/drawable/media_btns_selector.xml" value="0.112" />
         <entry key="app/src/main/res/drawable/my_audio_books_icon_selector.xml" value="0.118" />
         <entry key="app/src/main/res/drawable/play_pause_selector.xml" value="0.118" />
         <entry key="app/src/main/res/drawable/preivew_scrollable_conent.xml" value="0.118" />
@@ -54,6 +56,7 @@
         <entry key="app/src/main/res/layout/header_title_layout.xml" value="0.19610507246376813" />
         <entry key="app/src/main/res/layout/language_menu_layout.xml" value="0.19610507246376813" />
         <entry key="app/src/main/res/layout/main_layout.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/media_btns_selector.xml" value="0.19610507246376813" />
         <entry key="app/src/main/res/layout/media_player_layout.xml" value="0.32027130126953124" />
         <entry key="app/src/main/res/layout/my_audio_file_item_layout.xml" value="0.375" />
         <entry key="app/src/main/res/layout/splash_layout.xml" value="0.18554938007695596" />

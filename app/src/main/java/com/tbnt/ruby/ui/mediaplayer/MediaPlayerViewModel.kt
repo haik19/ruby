@@ -1,6 +1,5 @@
 package com.tbnt.ruby.ui.mediaplayer
 
-import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tbnt.ruby.entity.AudioPlayerEntity
@@ -10,7 +9,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.io.File
 
 class MediaPlayerViewModel(private val repo: RubyDataRepo) : ViewModel() {
     private val _playerDataFlow = MutableStateFlow<AudioPlayerEntity?>(null)
@@ -39,8 +37,4 @@ class MediaPlayerViewModel(private val repo: RubyDataRepo) : ViewModel() {
             }
         }
 
-
-    fun isFileInValid(uri: Uri) = File(uri.path.orEmpty()).length() == 0L
-
-    fun downLoadFile(uri: Uri, fileName: String) = repo.downloaSimpledFile(uri, fileName)
 }

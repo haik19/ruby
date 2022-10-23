@@ -3,14 +3,15 @@ package com.tbnt.ruby.ui.profile
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.tbnt.ruby.R
 import com.tbnt.ruby.databinding.FragmentProfileBinding
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 private const val PLAY_STORE_LINK =
     "https://play.google.com/store/apps/details?id=am.ggtaxi.main"
@@ -23,6 +24,7 @@ private const val HELP_SUPPORT = "https://play.google.com/store/games?hl=ru&gl=U
 class SettingsFragment : Fragment() {
 
     private val languageViewModel: LanguageViewModel by sharedViewModel()
+    private val settingsViewModel: SettingsViewModel by sharedViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,6 +35,7 @@ class SettingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         val binding = FragmentProfileBinding.bind(view)
         binding.contactUs.setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW).apply {
@@ -46,6 +49,16 @@ class SettingsFragment : Fragment() {
                 setPackage(PLAY_STORE_PACKAGE) //TODO CHANGE
             }
             startActivity(intent)
+        }
+        binding.terms.setOnClickListener {
+            viewLifecycleOwner.lifecycleScope.launch {
+                val url = settingsViewModel.getPolicyUrl()
+                val intent = Intent(Intent.ACTION_VIEW).apply {
+                    data = Uri.parse(url.orEmpty())
+                }
+                startActivity(intent)
+            }
+
         }
         binding.tellAFriend.setOnClickListener {
             val sharingIntent = Intent(Intent.ACTION_SEND);

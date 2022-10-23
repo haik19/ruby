@@ -16,7 +16,7 @@ class AudioSubPackagesViewModel(private val repo: RubyDataRepo) : ViewModel() {
     fun loadSubPackages(id: String) = viewModelScope.launch(Dispatchers.Default) {
         repo.getData()?.let { apiModel ->
             val subPackages = apiModel.audioBooks.find { it.id == id }?.subpackage?.map {
-                SubAudioEntity(id, it.imageUrl, it.name, it.duration)
+                SubAudioEntity(id, it.imageUrl, it.name, it.duration, it.audioFileName)
             }
             _packagesDataFlow.emit(subPackages)
         }

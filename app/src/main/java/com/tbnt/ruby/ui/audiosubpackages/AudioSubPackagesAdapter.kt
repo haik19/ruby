@@ -5,26 +5,26 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.tbnt.ruby.entity.SubAudioEntity
 import com.squareup.picasso.Picasso
 import com.tbnt.ruby.databinding.SubAudioItemLayoutBinding
+import com.tbnt.ruby.entity.SubAudioEntity
 import com.tbnt.ruby.setRoundedCorner
 import com.tbnt.ruby.toPx
 
-class AudioSubPackagesAdapter(private val onClick: (id: String, index: Int) -> Unit) :
+class AudioSubPackagesAdapter(private val onClick: (id: String, index: Int, fullAudioName: String) -> Unit) :
     ListAdapter<SubAudioEntity, AudioSubPackagesAdapter.SubAudioViewHolder>(object :
         DiffUtil.ItemCallback<SubAudioEntity>() {
         override fun areItemsTheSame(oldItem: SubAudioEntity, newItem: SubAudioEntity) =
             oldItem.id == newItem.id
 
         override fun areContentsTheSame(oldItem: SubAudioEntity, newItem: SubAudioEntity) =
-            oldItem.imageUrl == newItem.imageUrl
+            oldItem == newItem
     }) {
 
 
     class SubAudioViewHolder(
         private val binding: SubAudioItemLayoutBinding,
-        val onClick: (id: String, index: Int) -> Unit
+        val onClick: (id: String, index: Int, fullAudioName: String) -> Unit
     ) :
         RecyclerView.ViewHolder(binding.root) {
         init {
@@ -34,7 +34,7 @@ class AudioSubPackagesAdapter(private val onClick: (id: String, index: Int) -> U
         fun bind(subAudioEntity: SubAudioEntity) {
             binding.run {
                 itemView.setOnClickListener {
-                    onClick(subAudioEntity.id, adapterPosition)
+                    onClick(subAudioEntity.id, adapterPosition, subAudioEntity.audioFileName)
                 }
                 audioTitle.text = subAudioEntity.title
                 audioDuration.text = subAudioEntity.duration
