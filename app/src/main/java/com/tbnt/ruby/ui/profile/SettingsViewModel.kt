@@ -7,7 +7,9 @@ import kotlinx.coroutines.withContext
 
 class SettingsViewModel(private val repo: RubyDataRepo) : ViewModel() {
 
-    fun getContactUrl() = ""
+    suspend fun getContactEmail() = withContext(Dispatchers.IO) {
+        repo.getData()?.settingsInfo?.contactEmail
+    }
 
     suspend fun getPolicyUrl() = withContext(Dispatchers.IO) {
         repo.getData()?.settingsInfo?.termsUrl

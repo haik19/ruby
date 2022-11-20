@@ -46,7 +46,7 @@ class AudioPreviewFragment : Fragment() {
                         findNavController().navigate(
                             AudioPreviewFragmentDirections.actionAudioPreviewFragmentToMediaPlayerFragment(
                                 audioPreviewId,
-                                0, true, simpleAudioFileName, fullAudioFileName
+                                0, true, simpleAudioFileName, 0
                             )
                         )
                     } else {
@@ -71,7 +71,11 @@ class AudioPreviewFragment : Fragment() {
 
         val scrollableContent = binding.previewScrollableContent
         scrollableContent.leaveFeedbackText.setOnClickListener {
-            findNavController().navigate(R.id.action_audioPreviewFragment_to_feedBackFragment)
+            findNavController().navigate(
+                AudioPreviewFragmentDirections.actionAudioPreviewFragmentToFeedBackFragment(
+                    audioPreviewId
+                )
+            )
         }
         binding.closeBtn.setOnClickListener {
             findNavController().popBackStack()

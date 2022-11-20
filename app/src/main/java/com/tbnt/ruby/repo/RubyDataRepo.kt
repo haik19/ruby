@@ -22,7 +22,7 @@ interface RubyDataRepo {
         uri: Uri,
         fileName: String,
         packageId: String,
-        audioChosenLanguage : String,
+        audioChosenLanguage: String,
         dataStateCallback: (dataState: DataState) -> Unit
     )
 
@@ -32,4 +32,5 @@ interface RubyDataRepo {
         dataStateCallback: (dataState: DataState) -> Unit
     )
 
+    suspend fun sendFeedback(feedback: String)
 }

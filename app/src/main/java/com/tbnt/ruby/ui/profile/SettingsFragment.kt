@@ -38,10 +38,13 @@ class SettingsFragment : Fragment() {
 
         val binding = FragmentProfileBinding.bind(view)
         binding.contactUs.setOnClickListener {
-            val intent = Intent(Intent.ACTION_VIEW).apply {
-                data = Uri.parse(HELP_SUPPORT) //TODO CHANGE
+            viewLifecycleOwner.lifecycleScope.launch {
+                val intent = Intent(Intent.ACTION_SEND).apply {
+                    putExtra(Intent.EXTRA_EMAIL, arrayOf(settingsViewModel.getContactEmail()))
+                    type = "message/rfc822";
+                }
+                startActivity(intent)
             }
-            startActivity(intent)
         }
         binding.rate.setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW).apply {

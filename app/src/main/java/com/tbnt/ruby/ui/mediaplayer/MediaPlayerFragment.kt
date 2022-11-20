@@ -23,6 +23,7 @@ import com.tbnt.ruby.entity.State
 import com.tbnt.ruby.repo.model.FileType
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
@@ -41,26 +42,37 @@ class MediaPlayerFragment : Fragment(R.layout.media_player_layout) {
     private var viewBinding: MediaPlayerLayoutBinding? = null
     private var isPlayerDestroyed = false
     private var updateProgress = true
+    private var currentAudioPosition = 0
+    private var packageSize = 0
+    private var handler : Handler? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewBinding = MediaPlayerLayoutBinding.bind(view)
         viewBinding?.let { binding ->
-            binding.nextAudioBtn.setColorFilter(
-                ContextCompat.getColor(
-                    view.context,
-                    if (mediaPlayerFragmentArgs.isFromPreview) R.color.gray_20 else R.color.gray_5
-                ), android.graphics.PorterDuff.Mode.MULTIPLY
-            )
-            binding.previousAudioBtn.setColorFilter(
-                ContextCompat.getColor(
-                    view.context,
-                    if (mediaPlayerFragmentArgs.isFromPreview) R.color.gray_20 else R.color.gray_5
-                ), android.graphics.PorterDuff.Mode.MULTIPLY
-            )
+            currentAudioPosition = mediaPlayerFragmentArgs.subAudioId
+            packageSize = mediaPlayerFragmentArgs.packageSize
 
-            binding.nextAudioBtn.isEnabled = !mediaPlayerFragmentArgs.isFromPreview
-            binding.previousAudioBtn.isEnabled = !mediaPlayerFragmentArgs.isFromPreview
+            enableDisableNextButtons(mediaPlayerFragmentArgs.isFromPreview || currentAudioPosition == packageSize - 1)
+            enableDisablePreviousButton(mediaPlayerFragmentArgs.isFromPreview || currentAudioPosition == 0)
+
+            binding.nextAudioBtn.setOnClickListener {
+                stopForNextAudio()
+                currentAudioPosition++
+                currentAudioPosition %= packageSize
+                loadMediaData(State.INITIAL)
+                enableDisableNextButtons(currentAudioPosition == packageSize - 1)
+                enableDisablePreviousButton(currentAudioPosition == 0)
+            }
+
+            binding.previousAudioBtn.setOnClickListener {
+                stopForNextAudio()
+                currentAudioPosition--
+                currentAudioPosition %= packageSize
+                loadMediaData(State.INITIAL)
+                enableDisablePreviousButton(currentAudioPosition == 0)
+                enableDisableNextButtons(currentAudioPosition == packageSize - 1)
+            }
 
             setUpSeekBar()
             binding.imagePreview.setRoundedCorner(20.toPx)
@@ -68,16 +80,15 @@ class MediaPlayerFragment : Fragment(R.layout.media_player_layout) {
                 findNavController().popBackStack()
             }
 
-            dataViewModel.checkFileStatus(
-                generateFileId(filePackageId(), fileName()),
-                resolvedUri(view.context)
-            )
             dataViewModel.listenFullAudioState()
-
             mediaPlayerViewModel.playerDataFlow.onEach {
                 it?.let {
                     binding.audioTitle.text = it.title
                     Picasso.get().load(it.imageUrl).into(binding.imagePreview)
+                    dataViewModel.checkFileStatus(
+                        generateFileId(filePackageId(), fileName()),
+                        resolvedUri(view.context)
+                    )
                 }
             }.launchIn(viewLifecycleOwner.lifecycleScope)
 
@@ -97,13 +108,7 @@ class MediaPlayerFragment : Fragment(R.layout.media_player_layout) {
                                     binding.progressView.addAnimatorListener(object :
                                         AnimatorListenerAdapter() {
                                         override fun onAnimationEnd(animation: Animator?) {
-                                            binding.retryBtn.isVisible = false
-                                            binding.progressView.isVisible = false
-                                            binding.whiteLayer.isVisible = false
-                                            setUpMediaPlayer(
-                                                binding,
-                                                resolvedUri(view.context)
-                                            )
+                                            handleSuccessState(view.context)
                                             binding.progressView.removeAnimatorListener(this)
                                         }
                                     })
@@ -135,35 +140,43 @@ class MediaPlayerFragment : Fragment(R.layout.media_player_layout) {
             }.launchIn(viewLifecycleOwner.lifecycleScope)
 
             binding.retryBtn.setOnClickListener {
-                dataViewModel.downloadCurrentFile(
-                    if (mediaPlayerFragmentArgs.isFromPreview) FileType.SIMPLE else FileType.FULL,
-                    resolvedUri(view.context),
-                    fileName(),
-                    filePackageId(),
-                    chosenLanguage(it.context).toLanguageCode(view.context)
-                )
+                viewLifecycleOwner.lifecycleScope.launch {
+                    dataViewModel.downloadCurrentFile(
+                        if (mediaPlayerFragmentArgs.isFromPreview) FileType.SIMPLE else FileType.FULL,
+                        resolvedUri(view.context),
+                        fileName(),
+                        filePackageId(),
+                        chosenLanguage(it.context).toLanguageCode(view.context)
+                    )
+                }
             }
             loadMediaData(State.INITIAL)
         }
     }
 
     private fun handleSuccessState(context: Context) = viewBinding?.run {
-        retryBtn.isVisible = false
-        progressView.isVisible = false
-        setUpMediaPlayer(
-            this,
-            resolvedUri(context)
-        )
+        viewLifecycleOwner.lifecycleScope.launch {
+            retryBtn.isVisible = false
+            progressView.isVisible = false
+            whiteLayer.isVisible = false
+            setUpMediaPlayer(
+                this@run,
+                resolvedUri(context)
+            )
+        }
     }
 
-    private fun resolvedUri(
+    private suspend fun resolvedUri(
         context: Context
     ) = if (mediaPlayerFragmentArgs.isFromPreview) simpleFilePathUri(
         context,
         mediaPlayerFragmentArgs.simpleAudioName
     ) else fullFilePathUri(
         context,
-        mediaPlayerFragmentArgs.fullAudioName
+        mediaPlayerViewModel.audioNameByPosition(
+            mediaPlayerFragmentArgs.audioId,
+            currentAudioPosition
+        )
     )
 
     private fun simpleFilePathUri(context: Context, simpleAudioName: String) =
@@ -192,18 +205,18 @@ class MediaPlayerFragment : Fragment(R.layout.media_player_layout) {
                 playAudio()
                 binding.seekBar.max = player.duration
                 binding.audioDurationTxt.text = duration(player.duration.toLong())
-                val handler = Handler(Looper.getMainLooper())
-                handler.postDelayed(object : Runnable {
+                handler = Handler(Looper.getMainLooper())
+                handler?.postDelayed(object : Runnable {
                     override fun run() {
                         if (isPlayerDestroyed) {
-                            handler.removeCallbacksAndMessages(null)
+                            handler?.removeCallbacksAndMessages(null)
                             return
                         }
                         if (updateProgress) {
                             binding.seekBar.progress = player.currentPosition
                             binding.currentTime.text = duration(player.currentPosition.toLong())
                         }
-                        handler.postDelayed(this, PROGRESS_UPDATE_STAMP)
+                        handler?.postDelayed(this, PROGRESS_UPDATE_STAMP)
                     }
                 }, 0)
             }
@@ -243,10 +256,20 @@ class MediaPlayerFragment : Fragment(R.layout.media_player_layout) {
     private fun stopRelease() = viewBinding?.run {
         isPlayerDestroyed = true
         mediaPlayer?.run {
+            handler?.removeCallbacksAndMessages(null)
             stop()
             reset()
             release()
         }
+    }
+
+    private fun stopForNextAudio() {
+        viewBinding?.seekBar?.progress = 0
+        handler?.removeCallbacksAndMessages(null)
+        isPlayerDestroyed = true
+        mediaPlayer?.setOnPreparedListener(null)
+        mediaPlayer?.seekTo(0)
+        mediaPlayer?.stop()
     }
 
     private fun duration(milliseconds: Long): String {
@@ -289,7 +312,7 @@ class MediaPlayerFragment : Fragment(R.layout.media_player_layout) {
             //isFrom sub packages
             mediaPlayerViewModel.loadPlayerData(
                 mediaPlayerFragmentArgs.audioId,
-                mediaPlayerFragmentArgs.subAudioId,
+                currentAudioPosition,
                 state,
             )
         }
@@ -299,8 +322,35 @@ class MediaPlayerFragment : Fragment(R.layout.media_player_layout) {
         mediaPlayerFragmentArgs.audioId.takeIf { mediaPlayerFragmentArgs.isFromPreview }
             ?: mediaPlayerFragmentArgs.audioId
 
-    private fun fileName() =
+    private suspend fun fileName() =
         mediaPlayerFragmentArgs.simpleAudioName
             .takeIf { mediaPlayerFragmentArgs.isFromPreview }
-            ?: mediaPlayerFragmentArgs.fullAudioName
+            ?: mediaPlayerViewModel.audioNameByPosition(
+                mediaPlayerFragmentArgs.audioId,
+                currentAudioPosition
+            )
+
+    private fun enableDisableNextButtons(disable: Boolean) = viewBinding?.run {
+        nextAudioBtn.setColorFilter(
+            ContextCompat.getColor(
+                root.context,
+                if (disable) R.color.gray_20 else R.color.gray_5
+            ), android.graphics.PorterDuff.Mode.MULTIPLY
+        )
+        nextAudioBtn.isEnabled = !disable
+    }
+
+    private fun enableDisablePreviousButton(disable: Boolean) = viewBinding?.run {
+        previousAudioBtn.setColorFilter(
+            ContextCompat.getColor(
+                root.context,
+                if (disable) R.color.gray_20 else R.color.gray_5
+            ), android.graphics.PorterDuff.Mode.MULTIPLY
+        )
+        previousAudioBtn.isEnabled = !disable
+    }
+
+    companion object {
+        const val TAG = "MediaPlayerFragment"
+    }
 }

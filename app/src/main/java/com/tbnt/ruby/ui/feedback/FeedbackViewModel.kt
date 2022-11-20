@@ -1,0 +1,31 @@
+package com.tbnt.ruby.ui.feedback
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.tbnt.ruby.entity.FeedBackEntity
+import com.tbnt.ruby.repo.RubyDataRepo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+
+class FeedbackViewModel(private val repo: RubyDataRepo) : ViewModel() {
+
+    private val _feedbackFlow = MutableStateFlow<FeedBackEntity?>(null)
+    val feedbackFlow = _feedbackFlow.asStateFlow()
+
+    fun getFeedback(id: String) = viewModelScope.launch(Dispatchers.Default) {
+        repo.getData()?.let { apiModel ->
+            apiModel.audioBooks.find { it.id == id }?.run {
+                _feedbackFlow.update {
+                    FeedBackEntity(imageUrl, name, audioBooksCount)
+                }
+            }
+        }
+    }
+
+    fun sendFeedBack(feedBack: String) = viewModelScope.launch(Dispatchers.IO) {
+        repo.sendFeedback(feedBack)
+    }
+}

@@ -19,7 +19,7 @@ class AudioPreviewViewModel(private val repo: RubyDataRepo) : ViewModel() {
             apiModel.audioBooks.find { it.id == id }?.run {
                 _audioPreviewFlow.emit(
                     AudioPreviewEntity(
-                        id,
+                        this.id,
                         imageUrl,
                         name,
                         audioBooksCount,

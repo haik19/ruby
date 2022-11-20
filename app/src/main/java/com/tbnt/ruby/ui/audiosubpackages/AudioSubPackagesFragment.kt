@@ -40,7 +40,7 @@ class AudioSubPackagesFragment : Fragment() {
         val adapter = AudioSubPackagesAdapter { id, index, fileName ->
             findNavController().navigate(
                 AudioSubPackagesFragmentDirections.actionAudioSubPackagesFragmentToMediaPlayerFragment(
-                    id, index, false, "", fileName
+                    id, index, false, "", binding.subPackagesRv.adapter?.itemCount ?: 0
                 )
             )
         }

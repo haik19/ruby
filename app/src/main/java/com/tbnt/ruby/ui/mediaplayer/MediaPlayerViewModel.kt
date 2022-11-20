@@ -9,6 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MediaPlayerViewModel(private val repo: RubyDataRepo) : ViewModel() {
     private val _playerDataFlow = MutableStateFlow<AudioPlayerEntity?>(null)
@@ -37,4 +38,10 @@ class MediaPlayerViewModel(private val repo: RubyDataRepo) : ViewModel() {
             }
         }
 
+
+    suspend fun audioNameByPosition(id: String, position: Int) = withContext(Dispatchers.IO) {
+        repo.getData()?.let { apiModel ->
+            apiModel.audioBooks.find { it.id == id }?.subpackage?.getOrNull(position)?.audioFileName
+        }.orEmpty()
+    }
 }

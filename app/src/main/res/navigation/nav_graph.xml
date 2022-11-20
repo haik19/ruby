@@ -77,8 +77,8 @@
             android:name="simpleAudioName"
             app:argType="string" />
         <argument
-            android:name="fullAudioName"
-            app:argType="string" />
+            android:name="packageSize"
+            app:argType="integer" />
     </fragment>
     <fragment
         android:id="@+id/audioBooksFragment"
@@ -88,8 +88,13 @@
             android:id="@+id/action_audioBooksFragment_to_audioPreviewFragment"
             app:destination="@id/audioPreviewFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/feedBackFragment"
-        android:name="com.tbnt.ruby.ui.feedback.FeedBackFragment"
-        android:label="FeedBackFragment" />
+        android:name="com.tbnt.ruby.ui.feedback.FeedbackFragment"
+        android:label="FeedBackFragment">
+        <argument
+            android:name="audioId"
+            app:argType="string" />
+    </fragment>
 </navigation>

@@ -2,6 +2,7 @@ package com.tbnt.ruby.repo
 
 import android.net.Uri
 import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FileDownloadTask
 import com.google.firebase.storage.ktx.storage
@@ -28,6 +29,7 @@ private const val PURCHASED_DATA_KEY = "purchased_data_key"
 private const val ENG = "ENG"
 private const val SIMPLE = "SampleAudiobooks"
 private const val AUDIOBOOKS = "Audiobooks"
+private const val FEEDBACKS = "Feedbacks"
 
 class RubyDataRepoImpl(
     private val prefs: PreferencesService,
@@ -146,7 +148,8 @@ class RubyDataRepoImpl(
             val finalList = mutableListOf<AudioBook>()
             addCurrentPurchase(id, languageData, finalList)
             addPurchasedBooks(purchaseIds, languageData, finalList)
-            productionHashMap[languageKey] = LanguageData(finalList, emptyList(), languageData.settingsInfo)
+            productionHashMap[languageKey] =
+                LanguageData(finalList, emptyList(), languageData.settingsInfo)
         }
         prefs.putPreferences(PURCHASED_DATA_KEY, gson.toJson(productionHashMap))
         prefs.preference(PURCHASED_DATA_KEY, "{}")
@@ -285,6 +288,10 @@ class RubyDataRepoImpl(
 
     override fun listenFullAudioState(dataStateCallback: (dataState: DataState) -> Unit) {
         fullAudioDataStateCallback = dataStateCallback
+    }
+
+    override suspend fun sendFeedback(feedback: String) {
+        Firebase.database.reference.child(FEEDBACKS).setValue(feedback)
     }
 
     override suspend fun gePurchasedData(): LanguageData? {

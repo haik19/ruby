@@ -11,6 +11,7 @@ import com.tbnt.ruby.repo.RubyDataRepoImpl
 import com.tbnt.ruby.ui.audiopreview.AudioPreviewViewModel
 import com.tbnt.ruby.ui.audiosubpackages.AudioSubPackagesViewModel
 import com.tbnt.ruby.ui.auidiobooks.AudioBooksViewModel
+import com.tbnt.ruby.ui.feedback.FeedbackViewModel
 import com.tbnt.ruby.ui.mediaplayer.MediaPlayerViewModel
 import com.tbnt.ruby.ui.myaudiobooks.MyAudioBooksViewModel
 import com.tbnt.ruby.ui.profile.LanguageViewModel
@@ -73,5 +74,9 @@ fun appModule(context: Context) = module {
 
     viewModel {
         SettingsViewModel(get())
+    }
+
+    viewModel {
+        FeedbackViewModel(get())
     }
 }
