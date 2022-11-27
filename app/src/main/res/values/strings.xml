@@ -1,36 +1,29 @@
 <resources>
-    <string name="app_name">Ruby</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="app_name" translatable="false">Ruby</string>
+    <string name="gen_rus" translatable="false">Русский</string>
+    <string name="gen_eng" translatable="false">English</string>
+    <string name="gen_free" translatable="false">Free</string>
     <string name="audio_books">Audiobooks</string>
-    <string name="tips">Tips</string>
     <string name="my_audiobooks">My Audiobooks</string>
-    <string name="settings">Settings</string>
-    <string name="profile">Profile</string>
     <string name="explore">Explore</string>
-    <string name="search">Search</string>
     <string name="empty_txt">At first you need to choose (download) an audioguide</string>
     <string name="purchased">purchased</string>
     <string name="duration">Duration</string>
     <string name="tips_for_you">Tips \nfor you</string>
-    <string name="invite_friends">Invite Friends</string>
-    <string name="help_support">Help &amp; Support</string>
-    <string name="share">Share</string>
-    <string name="rate_us">Rate Us</string>
     <string name="gen_tips">Tips</string>
-    <string name="gen_try">TRY</string>
-    <string name="gen_play">PLAY</string>
-    <string name="gen_download">DOWNLOAD</string>
-    <string name="gen_play_preview">Play</string>
+    <string name="gen_try">Try</string>
+    <string name="gen_play">Play</string>
+    <string name="gen_download">Download</string>
     <string name="gen_leave_feedback">Leave Feedback</string>
     <string name="gen_now_playing">Now Playing</string>
     <string name="enjoy_text">Enjoying example?</string>
     <string name="type_review">Type a review</string>
-    <string name="gen_submit">SUBMIT</string>
+    <string name="gen_submit">Submit</string>
     <string name="gen_settings">Settings</string>
-    <string name="stay_in_touch">STAY IN TOUCH</string>
+    <string name="stay_in_touch">Stay in touch</string>
     <string name="guides_language">Guides language</string>
-    <string name="gen_support">SUPPORT</string>
-    <string name="gen_purchase">PURCHASES</string>
+    <string name="gen_support">Support</string>
+    <string name="gen_purchase">Purchases</string>
     <string name="gen_rate_app">Rate the app</string>
     <string name="gen_follow_us">Follow us on Facebook</string>
     <string name="tell_a_friend">Tell a Friend</string>
@@ -39,12 +32,10 @@
     <string name="gen_restore">Restore</string>
     <string name="gen_access">Get access to all guides</string>
     <string name="gen_save">save</string>
-    <string name="gen_language_ribbon_text">Download russian guides</string>
+    <string name="download_russian_guides">Download russian guides</string>
     <string name="gen_choose_guide">Choose guide</string>
     <string name="audio_files_count">%s audio files</string>
-    <string name="gen_rus">Russian</string>
-    <string name="gen_eng">English</string>
     <string name="gen_cancel">Cancel</string>
     <string name="language_menu_title">Choose audio guides language</string>
-    <string name="language_menu_sub_title">By changing language of audio guides you will need to dowmload them in selected language</string>
+    <string name="language_menu_sub_title">By changing language of audio guides you will need to download them in selected language</string>
 </resources>

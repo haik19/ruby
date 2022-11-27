@@ -24,6 +24,7 @@ data class AudioBook(
     @SerializedName("sample_audio_file_name") val sampleAudioFileName: String,
     @SerializedName("subpackage") val subpackage: List<Subpackage>,
     @SerializedName("tips") val tips: List<String>,
+    @SerializedName("is_free") val isFree: Boolean?
 )
 
 data class Subpackage(

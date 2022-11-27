@@ -78,7 +78,7 @@ class MyAudioBooksFragment : Fragment() {
         binding.changeLanguageBtn.apply {
             setTextColor("#FFFFFF")
             setBgColor("#F5C037")
-            setText(getString(R.string.gen_language_ribbon_text))
+            setText(getString(R.string.download_russian_guides))
         }
         languageViewModel.languageDataLiveData.observe(viewLifecycleOwner) {
             val langCode = PreferenceManager.getDefaultSharedPreferences(view.context)

@@ -6,5 +6,6 @@ data class AudioBook(
     val title: String,
     val price: String,
     val rating: Float,
-    val isPurchased: Boolean
+    val isPurchased: Boolean,
+    val isFree: Boolean,
 )

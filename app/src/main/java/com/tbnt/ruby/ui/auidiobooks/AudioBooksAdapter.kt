@@ -1,15 +1,17 @@
 package com.tbnt.ruby.ui.auidiobooks
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import com.tbnt.ruby.databinding.AudioFileItemLayoutBinding
 import com.tbnt.ruby.entity.AudioBook
+import com.tbnt.ruby.setRoundedCorner
+import com.tbnt.ruby.toPx
 
 class AudioBooksAdapter(private val itemClick: (id: String, imageView: ImageView) -> Unit) :
     ListAdapter<AudioBook, AudioBooksAdapter.AudioBookViewHolder>(object :
@@ -42,15 +44,28 @@ class AudioBooksAdapter(private val itemClick: (id: String, imageView: ImageView
     ) :
         RecyclerView.ViewHolder(itemBinding.root) {
 
+        init {
+            itemBinding.freeLabelText.setRoundedCorner(8.toPx)
+        }
+
         fun onBind(auiBook: AudioBook) {
-            if (auiBook.isPurchased) {
-                itemBinding.audioPrice.visibility = View.GONE
-                itemBinding.audioPurchasedText.visibility = View.VISIBLE
-            } else {
-                itemBinding.audioPrice.visibility = View.VISIBLE
-                itemBinding.audioPurchasedText.visibility = View.GONE
+            when {
+                auiBook.isFree -> {
+                    itemBinding.freeLabelText.isVisible = true
+                    itemBinding.audioPrice.isVisible = false
+                    itemBinding.audioPurchasedText.isVisible = false
+                }
+                auiBook.isPurchased -> {
+                    itemBinding.freeLabelText.isVisible = false
+                    itemBinding.audioPrice.isVisible = false
+                    itemBinding.audioPurchasedText.isVisible = true
+                }
+                else -> {
+                    itemBinding.freeLabelText.isVisible = false
+                    itemBinding.audioPrice.isVisible = true
+                    itemBinding.audioPurchasedText.isVisible = false
+                }
             }
-            itemBinding.audioImagePreview.transitionName = auiBook.imageUrl
             itemView.setOnClickListener {
                 click(auiBook.id, itemBinding.audioImagePreview)
             }
