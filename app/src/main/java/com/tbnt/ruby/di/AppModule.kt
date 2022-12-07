@@ -69,7 +69,7 @@ fun appModule(context: Context) = module {
     }
 
     viewModel {
-        LanguageViewModel()
+        LanguageViewModel(get())
     }
 
     viewModel {

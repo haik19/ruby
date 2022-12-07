@@ -33,9 +33,13 @@
     <string name="gen_access">Get access to all guides</string>
     <string name="gen_save">save</string>
     <string name="download_russian_guides">Download russian guides</string>
+    <string name="download_english_guides">Download english guides</string>
     <string name="gen_choose_guide">Choose guide</string>
     <string name="audio_files_count">%s audio files</string>
     <string name="gen_cancel">Cancel</string>
     <string name="language_menu_title">Choose audio guides language</string>
     <string name="language_menu_sub_title">By changing language of audio guides you will need to download them in selected language</string>
+    <string name="all_packages_title">Limited promotion</string>
+    <string name="all_packages_sub_title">All audio guides will be available for lifetime usage for just %s</string>
+    <string name="get_access">Get access</string>
 </resources>

@@ -12,6 +12,7 @@ import com.tbnt.ruby.databinding.LanguageMenuLayoutBinding
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 const val LANGUAGE_CODE_KEY = "language_code_key"
+const val LANGUAGE_CHANGED_KEY = "language_changed_key"
 
 class SettingsBottomMenu : BottomSheetDialogFragment() {
 
@@ -28,13 +29,12 @@ class SettingsBottomMenu : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val viewBinding = LanguageMenuLayoutBinding.bind(view)
-        val sharedPref = PreferenceManager.getDefaultSharedPreferences(view.context).edit()
         viewBinding.engLang.setOnClickListener {
-            languageViewModel.languageChanged(getString(R.string.gen_eng))
+            languageViewModel.languageChanged("ENG", view.context)
             dismiss()
         }
         viewBinding.rusLang.setOnClickListener {
-            languageViewModel.languageChanged(getString(R.string.gen_rus))
+            languageViewModel.languageChanged("RUS", view.context)
             dismiss()
         }
     }

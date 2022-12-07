@@ -29,11 +29,13 @@
     <string name="gen_access">Получите доступ ко всем гиды</string>
     <string name="gen_save">save</string>
     <string name="download_russian_guides">Скачать русскоязычные гиды</string>
+    <string name="download_english_guides">Скачать англоязычные гиды</string>
     <string name="gen_choose_guide">Выберите гид</string>
     <string name="audio_files_count">%s аудиофайлы</string>
-    <string name="gen_rus">Russian</string>
-    <string name="gen_eng">English</string>
     <string name="gen_cancel">Отмена</string>
     <string name="language_menu_title">Выберите язык аудиогидов</string>
     <string name="language_menu_sub_title">При изменении языка аудиогидов вам нужно будет скачать их на выбранном языке.</string>
+    <string name="all_packages_title">Ограниченная акция</string>
+    <string name="all_packages_sub_title">Все аудиогиды будут доступны для пожизненного использования всего за %s.</string>
+    <string name="get_access">Получить доступ</string>
 </resources>

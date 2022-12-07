@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -41,14 +42,23 @@ class FeedbackFragment : Fragment() {
             }
         }.launchIn(viewLifecycleOwner.lifecycleScope)
 
-        feedbackViewModel.getFeedback(feedbackFragmentArgs.audioId)
+        feedbackViewModel.getFeedbackData(feedbackFragmentArgs.audioId)
+        feedbackViewModel.feedbackUploadedFlow.onEach {
+            if (it) findNavController().popBackStack()
+            binding.progress.isVisible = false
+        }.launchIn(viewLifecycleOwner.lifecycleScope)
 
         binding.submitButton.apply {
             setTextColor("#FFFFFF")
             setBgColor("#F5C037")
             setText(getString(R.string.gen_submit))
             setOnClickListener {
-                feedbackViewModel.sendFeedBack(binding.feedbackEditText.text?.trim().toString())
+                binding.progress.isVisible = true
+                feedbackViewModel.sendFeedBack(
+                    feedbackFragmentArgs.audioId,
+                    binding.ratingBar.rating,
+                    binding.feedbackEditText.text?.trim().toString()
+                )
                 findNavController().popBackStack()
             }
         }

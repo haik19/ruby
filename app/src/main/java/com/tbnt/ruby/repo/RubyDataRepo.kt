@@ -16,7 +16,7 @@ interface RubyDataRepo {
     suspend fun getData(): LanguageData?
     suspend fun gePurchasedData(): LanguageData?
     suspend fun getPurchasedIds(): List<String>
-    suspend fun storePurchasedData(id: String)
+    suspend fun storePurchasedData(id: List<String>)
     fun downloadCurrentFile(
         fileType: FileType,
         uri: Uri,
@@ -32,5 +32,13 @@ interface RubyDataRepo {
         dataStateCallback: (dataState: DataState) -> Unit
     )
 
-    suspend fun sendFeedback(feedback: String)
+    suspend fun sendFeedback(
+        packageId: String,
+        rating: Float,
+        feedback: String,
+        successCallBack: () -> Unit
+    )
+
+    fun isLangPackageExist(langCode: String): Boolean
+    suspend fun deletePreviousLangPackage(langCode: String)
 }

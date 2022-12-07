@@ -36,4 +36,8 @@ class PreferencesServiceImpl(
             }.apply()
         }
     }
+
+    override fun remove(key: String) {
+        sharedPreferences.edit().remove(key).apply()
+    }
 }

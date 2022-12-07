@@ -4,16 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tbnt.ruby.DataViewModel
-import com.tbnt.ruby.R
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.tbnt.ruby.*
 import com.tbnt.ruby.databinding.FragmentAudioBooksBinding
-import com.tbnt.ruby.setRoundedCorner
-import com.tbnt.ruby.toPx
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -42,6 +41,24 @@ class AudioBooksFragment : Fragment() {
             findNavController().navigate(action)
         }
         val binding = FragmentAudioBooksBinding.bind(view)
+        binding.ribbon.setOnClickListener {
+            BottomSheetDialog(view.context).apply {
+                setContentView(View.inflate(context, R.layout.title_sections, null))
+                findViewById<TextView>(R.id.cancel)?.setOnClickListener {
+                    dismiss()
+                }
+                findViewById<TextView>(R.id.get_access_view)?.setOnClickListener {
+                    audioBooksViewModel.storePurchasedData(audioAdapter.currentList.map { it.id })
+                    audioAdapter.currentList.forEach {
+                        audioBooksViewModel.downloadPackage(
+                            it.id, chosenLanguage(context)
+                        )
+                    }
+                    dismiss()
+                }
+                show()
+            }
+        }
         binding.audioRv.apply {
             addItemDecoration(AudioRvDecoration())
             layoutManager = GridLayoutManager(context, 2)
@@ -51,7 +68,7 @@ class AudioBooksFragment : Fragment() {
         audioBooksViewModel.booksDataStateFlow.onEach {
             if (it.isEmpty()) return@onEach
             audioAdapter.submitList(it) {
-                binding.fabAddOItransferIn.visibility = View.VISIBLE
+                binding.ribbon.visibility = View.VISIBLE
             }
         }.launchIn(viewLifecycleOwner.lifecycleScope)
 
@@ -61,7 +78,7 @@ class AudioBooksFragment : Fragment() {
 
         audioBooksViewModel.loadAudioBooks()
 
-        binding.fabAddOItransferIn.setRoundedCorner(26f)
+        binding.ribbon.setRoundedCorner(26f)
         binding.audioRv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 deltaOffset += dy.toFloat()
@@ -75,7 +92,7 @@ class AudioBooksFragment : Fragment() {
 
                 if (verticalOffset != deltaOffset) {
                     val translationY: Float = 70.toPx - deltaOffset
-                    binding.fabAddOItransferIn.translationY = translationY
+                    binding.ribbon.translationY = translationY
                     verticalOffset = deltaOffset
                 }
             }

@@ -1,7 +1,6 @@
 package com.tbnt.ruby.ui.audiopreview
 
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,9 +10,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.squareup.picasso.Picasso
 import com.tbnt.ruby.R
+import com.tbnt.ruby.chosenLanguage
 import com.tbnt.ruby.databinding.AudioPreviewLayoutBinding
 import com.tbnt.ruby.toLanguageCode
-import com.tbnt.ruby.ui.profile.LANGUAGE_CODE_KEY
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -84,10 +83,10 @@ class AudioPreviewFragment : Fragment() {
             setOnClickListener {
                 visibility = View.GONE
                 showPlayButton(binding)
-                audioPreviewViewModel.storePurchasedData(args.audioBookId)
+                audioPreviewViewModel.storePurchasedData(listOf(args.audioBookId))
                 audioPreviewViewModel.downloadPackage(
-                    args.audioBookId, PreferenceManager.getDefaultSharedPreferences(view.context)
-                        .getString(LANGUAGE_CODE_KEY, "lang").orEmpty().toLanguageCode(context)
+                    args.audioBookId,
+                    chosenLanguage(it.context)
                 )
             }
         }

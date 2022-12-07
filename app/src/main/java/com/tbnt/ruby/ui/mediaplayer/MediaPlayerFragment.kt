@@ -44,7 +44,7 @@ class MediaPlayerFragment : Fragment(R.layout.media_player_layout) {
     private var updateProgress = true
     private var currentAudioPosition = 0
     private var packageSize = 0
-    private var handler : Handler? = null
+    private var handler: Handler? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -146,7 +146,7 @@ class MediaPlayerFragment : Fragment(R.layout.media_player_layout) {
                         resolvedUri(view.context),
                         fileName(),
                         filePackageId(),
-                        chosenLanguage(it.context).toLanguageCode(view.context)
+                        chosenLanguage(it.context)
                     )
                 }
             }
@@ -189,7 +189,7 @@ class MediaPlayerFragment : Fragment(R.layout.media_player_layout) {
 
     private fun fullFilePathUri(context: Context, fullAudioName: String) = Uri.parse(
         context.filesDir.absolutePath + File.separator
-                + AUDIOBOOKS + File.separator + Locale.getDefault().isO3Language.supportingLanCode() + File.separator + mediaPlayerFragmentArgs.audioId + File.separator + fullAudioName.plus(
+                + AUDIOBOOKS + File.separator + chosenLanguage(context) + File.separator + mediaPlayerFragmentArgs.audioId + File.separator + fullAudioName.plus(
             ".mp3"
         )
     )

@@ -28,4 +28,13 @@ class AudioBooksViewModel(private val repo: RubyDataRepo) : ViewModel() {
             })
         }
     }
+
+    fun downloadPackage(id: String, langCode: String) =
+        viewModelScope.launch(Dispatchers.Default) {
+            repo.downloadPackage(id, langCode)
+        }
+
+    fun storePurchasedData(id: List<String>) = viewModelScope.launch(Dispatchers.Default) {
+        repo.storePurchasedData(id)
+    }
 }

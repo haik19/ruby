@@ -15,7 +15,10 @@ class FeedbackViewModel(private val repo: RubyDataRepo) : ViewModel() {
     private val _feedbackFlow = MutableStateFlow<FeedBackEntity?>(null)
     val feedbackFlow = _feedbackFlow.asStateFlow()
 
-    fun getFeedback(id: String) = viewModelScope.launch(Dispatchers.Default) {
+    private val _feedbackUploadedFlow = MutableStateFlow<Boolean>(false)
+    val feedbackUploadedFlow = _feedbackUploadedFlow.asStateFlow()
+
+    fun getFeedbackData(id: String) = viewModelScope.launch(Dispatchers.Default) {
         repo.getData()?.let { apiModel ->
             apiModel.audioBooks.find { it.id == id }?.run {
                 _feedbackFlow.update {
@@ -25,7 +28,13 @@ class FeedbackViewModel(private val repo: RubyDataRepo) : ViewModel() {
         }
     }
 
-    fun sendFeedBack(feedBack: String) = viewModelScope.launch(Dispatchers.IO) {
-        repo.sendFeedback(feedBack)
+    fun sendFeedBack(
+        packageId: String,
+        rating: Float,
+        feedback: String
+    ) = viewModelScope.launch(Dispatchers.IO) {
+        repo.sendFeedback(packageId, rating, feedback) {
+            _feedbackUploadedFlow.tryEmit(true)
+        }
     }
 }

@@ -1,19 +1,17 @@
 package com.tbnt.ruby.ui.myaudiobooks
 
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.tbnt.ruby.DataViewModel
-import com.tbnt.ruby.R
+import com.tbnt.ruby.*
 import com.tbnt.ruby.databinding.FragmentMyAudioBooksBinding
-import com.tbnt.ruby.ui.profile.LANGUAGE_CODE_KEY
 import com.tbnt.ruby.ui.profile.LanguageViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -26,8 +24,7 @@ class MyAudioBooksFragment : Fragment() {
     private val dataViewModel: DataViewModel by sharedViewModel()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_my_audio_books, container, false)
     }
@@ -46,12 +43,17 @@ class MyAudioBooksFragment : Fragment() {
         val myBooksAdapter = MyAudioBooksAdapter { title, id ->
             val action =
                 MyAudioBooksFragmentDirections.actionMyAudioBooksFragmentToAudioSubPackagesFragment(
-                    id,
-                    title
+                    id, title
                 )
             findNavController().navigate(action)
         }
         myAudioBooksViewModel.myAudioBooksFlow.onEach {
+            binding.changeLanguageBtn.isVisible =
+                !it.isNullOrEmpty() && languageViewModel.isLangChanged() && !myAudioBooksViewModel.isLangPackageExist(
+                    chosenLanguage(binding.root.context)
+                )
+            binding.myAudioRv.updatePadding(bottom = (if(binding.changeLanguageBtn.isVisible) 60.toPx else 0).toInt())
+
             it?.let {
                 myBooksAdapter.submitList(it) {
                     if (myBooksAdapter.currentList.isEmpty()) {
@@ -78,15 +80,24 @@ class MyAudioBooksFragment : Fragment() {
         binding.changeLanguageBtn.apply {
             setTextColor("#FFFFFF")
             setBgColor("#F5C037")
-            setText(getString(R.string.download_russian_guides))
+            val languageText = when (chosenLanguage(context)) {
+                "ENG" -> context.getString(R.string.download_english_guides)
+                else -> context.getString(R.string.download_russian_guides)
+            }
+            setText(languageText)
         }
-        languageViewModel.languageDataLiveData.observe(viewLifecycleOwner) {
-            val langCode = PreferenceManager.getDefaultSharedPreferences(view.context)
-                .getString(LANGUAGE_CODE_KEY, "lang").orEmpty()
-            if (langCode.isNotEmpty() && it != langCode) {
-                binding.changeLanguageBtn.isVisible = true
-                PreferenceManager.getDefaultSharedPreferences(view.context).edit()
-                    .putString(LANGUAGE_CODE_KEY, getString(R.string.gen_rus)).apply()
+
+        binding.changeLanguageBtn.setOnClickListener {
+            if (activity?.isNetworkConnected() == true) {
+                myBooksAdapter.currentList.forEach { audioPackage ->
+                    myAudioBooksViewModel.downloadPackage(
+                        audioPackage.id, chosenLanguage(it.context)
+                    )
+                }
+                binding.changeLanguageBtn.isVisible = false
+                binding.myAudioRv.updatePadding(bottom = 0)
+                languageViewModel.deletedLangChanged()
+                myAudioBooksViewModel.deletePreviousLangPackage(if (chosenLanguage(it.context) == "ENG") "RUS" else "ENG")
             }
         }
     }

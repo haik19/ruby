@@ -7,7 +7,6 @@ import com.tbnt.ruby.repo.RubyDataRepo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class AudioPreviewViewModel(private val repo: RubyDataRepo) : ViewModel() {
@@ -36,7 +35,7 @@ class AudioPreviewViewModel(private val repo: RubyDataRepo) : ViewModel() {
         }
     }
 
-    fun storePurchasedData(id: String) = viewModelScope.launch(Dispatchers.Default) {
+    fun storePurchasedData(id: List<String>) = viewModelScope.launch(Dispatchers.Default) {
         repo.storePurchasedData(id)
     }
 

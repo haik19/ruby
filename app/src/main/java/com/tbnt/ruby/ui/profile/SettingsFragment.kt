@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.tbnt.ruby.R
+import com.tbnt.ruby.chosenLanguage
 import com.tbnt.ruby.databinding.FragmentProfileBinding
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -74,6 +75,10 @@ class SettingsFragment : Fragment() {
             SettingsBottomMenu.show(parentFragmentManager)
         }
 
+        binding.guidLanguageCode.text = when (chosenLanguage(view.context)) {
+            "ENG" -> activity?.getString(R.string.gen_eng)
+            else -> activity?.getString(R.string.gen_rus)
+        }
         languageViewModel.languageDataLiveData.observe(viewLifecycleOwner) {
             binding.guidLanguageCode.text = it
         }

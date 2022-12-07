@@ -5,6 +5,7 @@ import android.net.Uri
 import android.preference.PreferenceManager
 import com.tbnt.ruby.ui.profile.LANGUAGE_CODE_KEY
 import java.io.File
+import java.util.*
 
 private val supportedLanguages = listOf("eng", "rus")
 
@@ -18,4 +19,4 @@ fun generateFileId(packageId: String, fileName: String) = packageId.plus(fileNam
 fun String.toMp3Format() = plus(".mp3")
 
 fun chosenLanguage(context: Context) = PreferenceManager.getDefaultSharedPreferences(context)
-    .getString(LANGUAGE_CODE_KEY, "lang").orEmpty()
+    .getString(LANGUAGE_CODE_KEY, Locale.getDefault().isO3Language.supportingLanCode()).orEmpty()

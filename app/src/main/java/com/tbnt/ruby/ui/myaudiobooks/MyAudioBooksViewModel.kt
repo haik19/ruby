@@ -31,4 +31,17 @@ class MyAudioBooksViewModel(private val repo: RubyDataRepo) : ViewModel() {
             _myAudioBooksFlow.emit(myAudioBooks)
         }
     }
+
+    fun downloadPackage(id: String, langCode: String) =
+        viewModelScope.launch(Dispatchers.Default) {
+            repo.downloadPackage(id, langCode)
+        }
+
+    fun isLangPackageExist(langCode: String) = repo.isLangPackageExist(langCode)
+
+    fun deletePreviousLangPackage(langCode: String) {
+        viewModelScope.launch(Dispatchers.Default) {
+            repo.deletePreviousLangPackage(langCode)
+        }
+    }
 }
