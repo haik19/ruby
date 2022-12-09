@@ -305,7 +305,7 @@ class RubyDataRepoImpl(
     ) {
         Firebase.storage.reference.child(FEEDBACKS).child(feedBackFileName())
             .putBytes(
-                "Name $packageId\n Rating $rating \n Feedback $feedback".toByteArray(),
+                "Name - $packageId.\nRating - $rating.\nFeedback - $feedback.\nPlatform - AND".toByteArray(),
                 StorageMetadata.Builder().setContentType("text/plain").build()
             ).addOnSuccessListener {
                 successCallBack()
@@ -315,7 +315,7 @@ class RubyDataRepoImpl(
     private fun feedBackFileName(): String {
         val dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy, HH:mm:ss")
         val now: LocalDateTime = LocalDateTime.now()
-        return dateFormatter.format(now)
+        return "feedback on ${dateFormatter.format(now)}.txt"
     }
 
     override fun isLangPackageExist(langCode: String): Boolean {
