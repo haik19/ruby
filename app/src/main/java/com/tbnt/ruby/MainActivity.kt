@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -13,6 +14,8 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.tbnt.ruby.databinding.MainLayoutBinding
+import com.tbnt.ruby.payment.GooglePaymentService
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : FragmentActivity() {
@@ -21,10 +24,8 @@ class MainActivity : FragmentActivity() {
     private val dataViewModel: DataViewModel by viewModel()
     private val keysField = FirebaseDatabase.getInstance().getReference("production")
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         keysField.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 dataViewModel.storeData(snapshot)
@@ -58,6 +59,11 @@ class MainActivity : FragmentActivity() {
 
     private fun hideBottomNav() = binding?.run {
         navigationView.visibility = View.GONE
+    }
+
+    override fun onDestroy() {
+        GooglePaymentService.endBilling()
+        super.onDestroy()
     }
 
     companion object {

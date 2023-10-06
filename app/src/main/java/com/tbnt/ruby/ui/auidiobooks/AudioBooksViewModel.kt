@@ -3,31 +3,42 @@ package com.tbnt.ruby.ui.auidiobooks
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tbnt.ruby.entity.AudioBook
+import com.tbnt.ruby.getResolvedPackageId
+import com.tbnt.ruby.payment.GooglePaymentService
 import com.tbnt.ruby.repo.RubyDataRepo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class AudioBooksViewModel(private val repo: RubyDataRepo) : ViewModel() {
+class AudioBooksViewModel(
+    private val repo: RubyDataRepo
+) : ViewModel() {
     private val _booksDataStateFlow = MutableStateFlow<List<AudioBook>>(emptyList())
     val booksDataStateFlow = _booksDataStateFlow.asStateFlow()
 
     fun loadAudioBooks() = viewModelScope.launch(Dispatchers.Default) {
-        repo.getData()?.let {
-            _booksDataStateFlow.emit(it.audioBooks.map { apiData ->
-                AudioBook(
-                    apiData.id,
-                    apiData.imageUrl,
-                    apiData.name,
-                    "25$",
-                    apiData.ratingStars,
-                    repo.getPurchasedIds().contains(apiData.id),
-                    apiData.isFree ?: false
-                )
-            })
+        repo.getData()?.let { data ->
+            GooglePaymentService.queryProductDetails(data.audioBooks.map { getResolvedPackageId(it.id) }) {
+                _booksDataStateFlow.emit(data.audioBooks.map { apiData ->
+                    AudioBook(
+                        apiData.id,
+                        apiData.imageUrl,
+                        apiData.name,
+                        GooglePaymentService.getPrice(getResolvedPackageId(apiData.id)),
+                        apiData.ratingStars,
+                        isPackageBought(apiData.id),
+                        apiData.isFree ?: false
+                    )
+                })
+            }
         }
     }
+
+    private suspend fun isPackageBought(packageId: String) =
+        repo.getPurchasedIds().contains(packageId) || GooglePaymentService.isPackagePurchased(
+            getResolvedPackageId(packageId)
+        )
 
     fun downloadPackage(id: String, langCode: String) =
         viewModelScope.launch(Dispatchers.Default) {

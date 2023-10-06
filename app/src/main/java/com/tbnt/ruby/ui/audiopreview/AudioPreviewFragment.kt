@@ -12,9 +12,14 @@ import com.squareup.picasso.Picasso
 import com.tbnt.ruby.R
 import com.tbnt.ruby.chosenLanguage
 import com.tbnt.ruby.databinding.AudioPreviewLayoutBinding
+import com.tbnt.ruby.getResolvedPackageId
+import com.tbnt.ruby.payment.GooglePaymentService
+import com.tbnt.ruby.repo.model.FileType
 import com.tbnt.ruby.toLanguageCode
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AudioPreviewFragment : Fragment() {
@@ -81,13 +86,18 @@ class AudioPreviewFragment : Fragment() {
         }
         binding.downloadBtn.apply {
             setOnClickListener {
-                visibility = View.GONE
-                showPlayButton(binding)
-                audioPreviewViewModel.storePurchasedData(listOf(args.audioBookId))
-                audioPreviewViewModel.downloadPackage(
-                    args.audioBookId,
-                    chosenLanguage(it.context)
-                )
+                GooglePaymentService.launchBillingFlow(
+                    requireActivity(),
+                    getResolvedPackageId(args.audioBookId)
+                ) {
+                    visibility = View.GONE
+                    showPlayButton(binding)
+                    audioPreviewViewModel.storePurchasedData(listOf(args.audioBookId))
+                    audioPreviewViewModel.downloadPackage(
+                        args.audioBookId,
+                        chosenLanguage(it.context)
+                    )
+                }
             }
         }
         audioPreviewViewModel.audioPreviewFlow.onEach {

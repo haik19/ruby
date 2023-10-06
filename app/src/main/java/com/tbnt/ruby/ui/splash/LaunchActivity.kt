@@ -6,6 +6,7 @@ import androidx.lifecycle.lifecycleScope
 import com.tbnt.ruby.MainActivity
 import com.tbnt.ruby.R
 import com.tbnt.ruby.isNetworkConnected
+import com.tbnt.ruby.payment.GooglePaymentService
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -19,10 +20,12 @@ class LaunchActivity : FragmentActivity() {
             finish()
             return
         }
-        lifecycleScope.launch {
-            delay(1000)
-            MainActivity.startActivity(this@LaunchActivity)
-            finish()
+        GooglePaymentService.init(applicationContext) {
+            lifecycleScope.launch {
+                delay(1000)
+                MainActivity.startActivity(this@LaunchActivity)
+                finish()
+            }
         }
     }
 }

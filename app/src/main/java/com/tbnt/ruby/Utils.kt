@@ -20,3 +20,7 @@ fun String.toMp3Format() = plus(".mp3")
 
 fun chosenLanguage(context: Context) = PreferenceManager.getDefaultSharedPreferences(context)
     .getString(LANGUAGE_CODE_KEY, Locale.getDefault().isO3Language.supportingLanCode()).orEmpty()
+
+fun getResolvedPackageId(packageId: String) =
+    BuildConfig.APPLICATION_ID.plus(".").plus(packageId.lowercase())
+
